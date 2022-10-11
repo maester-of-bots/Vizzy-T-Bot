@@ -30,7 +30,7 @@ class VIZZY_T:
         )
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test')
+        self.subreddit = self.reddit.subreddit('vizzy_t_test+soapboxbeers+freefolk')
 
         # Pull in quotes from quotes.py
         self.quotes = quotes
@@ -70,7 +70,7 @@ class VIZZY_T:
                 while not response:
                     seed()
                     num = randint(0,len(self.quotes)-1)
-                    if datetime.now().hour != self.posted_hour:
+                    if datetime.now().hour != self.posted_hour or len(self.posted) > len(self.quotes)-5:
                         self.posted = []
                         self.posted_hour = datetime.now().hour
 

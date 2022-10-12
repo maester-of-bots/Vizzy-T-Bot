@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 
 from quotes import quotes
 from sql import *
+import json
+
 
 
 class VIZZY_T:
@@ -46,6 +48,10 @@ class VIZZY_T:
         self.posted = []
         self.posted_hour = datetime.now().hour
 
+
+        self.sentience_url = "https://sentim-api.herokuapp.com/api/v1/"
+        self.sentience_Headers = {'Accept': "application/json", "Content-Type": "application/json"}
+
         # GODS BE GOOD
         self.run()
 
@@ -53,6 +59,14 @@ class VIZZY_T:
         """Use webhooks to notify admin on Discord"""
         data = {'content': body, 'username': 'VIZZY-T-BOT'}
         requests.post(self.webhook_url, data=data)
+
+    def sentience_evaluator(self, text):
+        payload = {"text": text}
+        r = requests.post(self.sentience_url, data=json.dumps(payload), headers=self.sentience_Headers)
+        response = json.loads(r.text)
+        score = response['result']['polarity']
+        result = response['result']['type']
+        return score, result
 
     def vizzytime(self, redditObject, type):
         readComments = getComments()
@@ -78,37 +92,39 @@ class VIZZY_T:
                     if num in self.posted:
                         pass
                     else:
-                        if "hot fuzz" in to_check:
-                            num = randint(0, len(self.hf) - 1)
-                            response = self.hf[num]
-                        else:
-                            response = self.quotes[num]
-                        if "{}" in response:
-                            response = response.format(redditObject.author.name)
-                        redditObject.reply(body=response)
-                        self.posted.append(num)
-                        redditObject.upvote()
-                        writeComment(redditObject.id)
-                        link = f"{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
-                        self.send_webhook(link)
+                        try:
+                            if "hot fuzz" in to_check:
+                                num = randint(0, len(self.hf) - 1)
+                                response = self.hf[num]
+                            else:
+                                response = self.quotes[num]
+                            if "{}" in response:
+                                response = response.format(redditObject.author.name)
+                            redditObject.reply(body=response)
+                            self.posted.append(num)
+                            redditObject.upvote()
+                            writeComment(redditObject.id)
+                            link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                            self.send_webhook(link)
+                        except Exception as e:
+                            print(e)
+                            link = F'ERROR - {e}\nLink - https://www.reddit.com{redditObject.permalink}'
+                            self.send_webhook(link)
 
     def run(self):
         print("Vizzy is online.")
-        comment_stream = self.subreddit.stream.comments(pause_after=-1)
-        submission_stream = self.subreddit.stream.submissions(pause_after=-1)
+        # comment_stream = self.subreddit.stream.comments(pause_after=-1)
+        # submission_stream = self.subreddit.stream.submissions(pause_after=-1)
 
-        while True:
-            for comment in comment_stream:
-                if comment is None:
-                    break
-                else:
-                    self.vizzytime(comment, "comment")
-
+        for comment in self.subreddit.stream.comments():
+            self.vizzytime(comment, "comment")
+            requests.get('https://hc-ping.com/9d4dd9b0-7d3d-4694-8704-aa207c346793')
+'''
             for submission in submission_stream:
                 if submission is None:
                     break
                 else:
                     self.vizzytime(submission, "post")
-
+'''
 
 vizzy = VIZZY_T()

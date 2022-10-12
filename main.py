@@ -1,12 +1,13 @@
-from datetime import *
 import os
-import praw
-from dotenv import load_dotenv
-import requests
-from sql import *
+from datetime import *
 from random import *
-from quotes import quotes
 
+import praw
+import requests
+from dotenv import load_dotenv
+
+from quotes import quotes
+from sql import *
 
 
 class VIZZY_T:
@@ -39,7 +40,7 @@ class VIZZY_T:
         self.final_quote = '"I, Viserys Targaryen, first of his name... King of the Andals, and the Rhoynar, and the First Men, ' \
                            'Lord of the Seven Kingdoms, and Protector of the Realm, do hereby name...' \
                            '{} Princess of Dragonstone and heir to the Iron Throne.'
-
+        self.hf = ["IT'S ALRIGHT ANDY! IT'S JUST BOLOGNESE!", "Don't you go bein' a twat now", 'Two blokes and a fuck-load of cutlery!']
 
         # Lazy variables for noting used quotes to keep from using them again within the hour
         self.posted = []
@@ -48,12 +49,12 @@ class VIZZY_T:
         # GODS BE GOOD
         self.run()
 
-    def send_webhook(self,body):
+    def send_webhook(self, body):
         """Use webhooks to notify admin on Discord"""
         data = {'content': body, 'username': 'VIZZY-T-BOT'}
-        requests.post(self.webhook_url,data=data)
+        requests.post(self.webhook_url, data=data)
 
-    def vizzytime(self,redditObject,type):
+    def vizzytime(self, redditObject, type):
         readComments = getComments()
         if redditObject.author == None:
             pass
@@ -65,26 +66,30 @@ class VIZZY_T:
             else:
                 to_check = redditObject.selftext.lower() + " " + redditObject.title.lower()
 
-            if "vizzy t" in to_check:
+            if "vizzy t" in to_check or "vissy t" in to_check:
                 response = ""
                 while not response:
                     seed()
-                    num = randint(0,len(self.quotes)-1)
-                    if datetime.now().hour != self.posted_hour or len(self.posted) > len(self.quotes)-5:
+                    num = randint(0, len(self.quotes) - 1)
+                    if datetime.now().hour != self.posted_hour or len(self.posted) > len(self.quotes) - 5:
                         self.posted = []
                         self.posted_hour = datetime.now().hour
 
                     if num in self.posted:
                         pass
                     else:
-                        response = self.quotes[num]
+                        if "hot fuzz" in to_check:
+                            num = randint(0, len(self.hf) - 1)
+                            response = self.hf[num]
+                        else:
+                            response = self.quotes[num]
                         if "{}" in response:
                             response = response.format(redditObject.author.name)
-                        redditObject.reply(body=response.upper())
+                        redditObject.reply(body=response)
                         self.posted.append(num)
                         redditObject.upvote()
                         writeComment(redditObject.id)
-                        link = f"Replied to {redditObject.author.name} with **'{response.upper()}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                        link = f"{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
                         self.send_webhook(link)
 
     def run(self):
@@ -104,8 +109,6 @@ class VIZZY_T:
                     break
                 else:
                     self.vizzytime(submission, "post")
-
-
 
 
 vizzy = VIZZY_T()

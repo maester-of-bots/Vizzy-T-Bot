@@ -42,7 +42,6 @@ quotes = [
 "*Just as Daenys foresaw the end of Valyria, Aegon foresaw the end of the world of men. 'Tis to begin with a terrible winter.*",
 "*Let us no longer hold ill feelings in our hearts. The crown cannot stand strong if the House of the Dragon remains divided.*",
 "*Mayhaps we can turn our attentions towards happier pursuits.*",
-"*My own face... is no longer a handsome one...if indeed it ever was.*",
 "*{} was a strong Lord Commander of the Kingsguard. But he was ill for some time. He passed in peace, I hope.*",
 "*That man's pride has pride.*",
 "*The boy just turned two, {}...*",
@@ -51,7 +50,6 @@ quotes = [
 "You think yourself a cunning man. Your designs are obvious.",
 "*The glory of old Valyria will never be seen again.* ",
 "*The Gods punish me for my indulgences.*",
-"*The idea that we control the dragons is an illusion. They're a power man should never have trifled with. One that brought Valyria its doom.*",
 "*The Iron Throne is the most dangerous seat in the realm.* ",
 "*The King's cupbearer must not be late. Leaves people wanting for cups.*",
 "*The tourney will take the better part of a week. Before the games are over, my son will be born, and the whole realm will celebrate.*",
@@ -71,3 +69,8 @@ quotes = [
 "*You are to return to Runestone and your lady wife at once, and you are to do so without quarrel by order of your King.*",
 "YOU SPEND MORE TIME IN THAT BATH THAN I DO ON THE THRONE!",
 "*Your mother's absence is a wound that will never heal. Without her, the Red Keep has lost a warmth that I dare say it will never recover.*"]
+
+yoinked = [
+    "*My own face... is no longer a handsome one...if indeed it ever was.*",
+    "*The idea that we control the dragons is an illusion. They're a power man should never have trifled with. One that brought Valyria its doom.*",
+]

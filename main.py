@@ -113,18 +113,9 @@ class VIZZY_T:
 
     def run(self):
         print("Vizzy is online.")
-        # comment_stream = self.subreddit.stream.comments(pause_after=-1)
-        # submission_stream = self.subreddit.stream.submissions(pause_after=-1)
 
         for comment in self.subreddit.stream.comments():
             self.vizzytime(comment, "comment")
             requests.get('https://hc-ping.com/9d4dd9b0-7d3d-4694-8704-aa207c346793')
-'''
-            for submission in submission_stream:
-                if submission is None:
-                    break
-                else:
-                    self.vizzytime(submission, "post")
-'''
 
 vizzy = VIZZY_T()

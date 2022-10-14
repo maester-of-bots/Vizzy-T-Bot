@@ -39,7 +39,6 @@ quotes = [
 "She's twelve!",
 "Ever since my name was read by the archmaesters at the Great Council, I have felt Corlys Velaryon's envious gaze staring at me from across the Blackwater.",
 "*It both gladdens my heart and fills me with sorrow to see these faces around the table.*",
-"*Just as Daenys foresaw the end of Valyria, Aegon foresaw the end of the world of men. 'Tis to begin with a terrible winter.*",
 "*Let us no longer hold ill feelings in our hearts. The crown cannot stand strong if the House of the Dragon remains divided.*",
 "*Mayhaps we can turn our attentions towards happier pursuits.*",
 "*{} was a strong Lord Commander of the Kingsguard. But he was ill for some time. He passed in peace, I hope.*",
@@ -48,7 +47,6 @@ quotes = [
 "This is a lie. You have been lied to.",
 "WHO IS RESPONSIBLE FOR THIS GOSSIP? HAVE THIS RUMORMONGER BROUGHT BEFORE ME AT ONCE AND I WILL TAKE THEIR EYES!",
 "You think yourself a cunning man. Your designs are obvious.",
-"*The glory of old Valyria will never be seen again.* ",
 "*The Gods punish me for my indulgences.*",
 "*The Iron Throne is the most dangerous seat in the realm.* ",
 "*The King's cupbearer must not be late. Leaves people wanting for cups.*",
@@ -73,4 +71,6 @@ quotes = [
 yoinked = [
     "*My own face... is no longer a handsome one...if indeed it ever was.*",
     "*The idea that we control the dragons is an illusion. They're a power man should never have trifled with. One that brought Valyria its doom.*",
+"*The glory of old Valyria will never be seen again.* ",
+"*Just as Daenys foresaw the end of Valyria, Aegon foresaw the end of the world of men. 'Tis to begin with a terrible winter.*",
 ]

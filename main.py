@@ -120,6 +120,7 @@ class VIZZY_T:
                 link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{bobby_b_responses[num]}'** \nLink - https://www.reddit.com{redditObject.permalink}"
                 self.send_webhook(link)
 
+
     def run(self):
         for comment in self.subreddit.stream.comments():
             self.vizzytime(comment, "comment")

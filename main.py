@@ -33,7 +33,7 @@ class VIZZY_T:
         )
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test+FreeFolkSimulator+freefolk+HouseOfTheDragon')
+        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolk+HouseOfTheDragon')
 
         # Pull in quotes from quotes.py
         self.quotes = quotes
@@ -117,7 +117,7 @@ class VIZZY_T:
                 redditObject.reply(body=bobby_b_responses[num])
                 writeComment(redditObject.id)
                 redditObject.upvote()
-                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{bobby_b_responses[num]}'** \nLink - https://www.reddit.com{redditObject.permalink}"
                 self.send_webhook(link)
 
 

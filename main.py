@@ -122,8 +122,6 @@ class VIZZY_T:
 
 
     def run(self):
-        print("Vizzy is online.")
-
         for comment in self.subreddit.stream.comments():
             self.vizzytime(comment, "comment")
             requests.get('https://hc-ping.com/9d4dd9b0-7d3d-4694-8704-aa207c346793')

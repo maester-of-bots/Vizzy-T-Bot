@@ -126,4 +126,4 @@ class VIZZY_T:
             self.vizzytime(comment, "comment")
             requests.get('https://hc-ping.com/9d4dd9b0-7d3d-4694-8704-aa207c346793')
 
-vizzy = VIZZY_T()
+VIZZY_T()

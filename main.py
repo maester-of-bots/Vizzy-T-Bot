@@ -33,7 +33,7 @@ class VIZZY_T:
         )
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolk+HouseOfTheDragon')
+        self.subreddit = self.reddit.subreddit('vizzy_t_test+FreeFolkSimulator+freefolk+HouseOfTheDragon')
 
         # Pull in quotes from quotes.py
         self.quotes = quotes
@@ -110,6 +110,16 @@ class VIZZY_T:
                             print(e)
                             link = F'ERROR - {e}\nLink - https://www.reddit.com{redditObject.permalink}'
                             self.send_webhook(link)
+            elif to_check == "the whore is pregnant!":
+                seed()
+                bobby_b_responses = ['I’ll have your tongue for that!',"GODS BE GOOD!!","*I WILL HAVE YOUR TONGUE FOR THAT!*","This is a lie. You have been lied to.","*There's a boy in the Queen's belly. I know it.*","*Then he will be loved and cherished.*",]
+                num = randint(0, len(bobby_b_responses) - 1)
+                redditObject.reply(body=bobby_b_responses[num])
+                writeComment(redditObject.id)
+                redditObject.upvote()
+                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                self.send_webhook(link)
+
 
     def run(self):
         print("Vizzy is online.")

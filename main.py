@@ -121,6 +121,7 @@ class VIZZY_T:
                 self.send_webhook(link)
 
 
+
     def run(self):
         for comment in self.subreddit.stream.comments():
             self.vizzytime(comment, "comment")

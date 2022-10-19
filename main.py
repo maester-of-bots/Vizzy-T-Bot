@@ -120,7 +120,7 @@ class VIZZY_T:
                 link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{bobby_b_responses[num]}'** \nLink - https://www.reddit.com{redditObject.permalink}"
                 self.send_webhook(link)
             elif "you've got a mustache" in to_check:
-                redditObject.reply(body="*I KNOW*")
+                redditObject.reply(body="**I KNOW**")
 
 
 

@@ -123,7 +123,7 @@ class VIZZY_T:
                 redditObject.reply(body="**I KNOW**")
                 writeComment(redditObject.id)
                 redditObject.upvote()
-                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{bobby_b_responses[num]}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **I KNOW** \nLink - https://www.reddit.com{redditObject.permalink}"
                 self.send_webhook(link)
 
 

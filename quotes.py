@@ -67,7 +67,11 @@ quotes = [
 "*You are my political headache.*",
 "*You are to return to Runestone and your lady wife at once, and you are to do so without quarrel by order of your King.*",
 "YOU SPEND MORE TIME IN THAT BATH THAN I DO ON THE THRONE!",
-"*Your mother's absence is a wound that will never heal. Without her, the Red Keep has lost a warmth that I dare say it will never recover.*"]
+"*Your mother's absence is a wound that will never heal. Without her, the Red Keep has lost a warmth that I dare say it will never recover.*",
+"You wear a crown. Do you also call yourself 'king'?",
+"What is this shadow? Name it, if it casts such a gloom",
+"You are a plague sent to destroy me!",
+]
 
 yoinked = [
     "*My own face... is no longer a handsome one...if indeed it ever was.*",

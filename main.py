@@ -33,7 +33,7 @@ class VIZZY_T:
         )
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolk+HouseOfTheDragon+BSFT')
+        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolk+HouseOfTheDragon+BSFT+lotrmemes')
 
         # Pull in quotes from quotes.py
         self.quotes = quotes

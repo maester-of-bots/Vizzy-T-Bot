@@ -12,6 +12,14 @@ import json
 
 
 
+def submissions_and_comments(subreddit, **kwargs):
+    results = []
+    results.extend(subreddit.new(**kwargs))
+    results.extend(subreddit.comments(**kwargs))
+    results.sort(key=lambda post: post.created_utc, reverse=True)
+    return results
+
+
 class VIZZY_T:
     def __init__(self):
 
@@ -34,6 +42,7 @@ class VIZZY_T:
 
         # Set the subreddit to monitor
         self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolk+HouseOfTheDragon+BSFT+lotrmemes')
+        # self.subreddit = self.reddit.subreddit('vizzy_t_test')
 
         # Pull in quotes from quotes.py
         self.quotes = quotes
@@ -52,6 +61,10 @@ class VIZZY_T:
         self.sentience_url = "https://sentim-api.herokuapp.com/api/v1/"
         self.sentience_Headers = {'Accept': "application/json", "Content-Type": "application/json"}
 
+
+
+        self.stream = praw.models.util.stream_generator(lambda **kwargs: submissions_and_comments(self.subreddit, **kwargs))
+
         # GODS BE GOOD
         self.run()
 
@@ -68,69 +81,87 @@ class VIZZY_T:
         result = response['result']['type']
         return score, result
 
-    def vizzytime(self, redditObject, type):
-        readComments = getComments()
-        if redditObject.author == None:
-            pass
-        elif redditObject.id in readComments or redditObject.author.name == self.bot_username:
-            pass
+    def vizzytime(self, redditObject):
+
+        skip = False
+
+        # If it's a submission
+        if isinstance(redditObject,praw.models.Submission):
+            to_check = redditObject.title.lower() + "\n" + redditObject.selftext.lower()
+            if redditObject.link_flair_text == "fuck off bots":
+                skip = True
+
+        # If it's a post
         else:
-            if type == "comment":
-                to_check = redditObject.body.lower()
+            to_check = redditObject.body.lower()
+
+        if not skip:
+
+            readComments = getComments()
+
+            if redditObject.author == None:
+                pass
+
+            elif redditObject.id in readComments or redditObject.author.name == self.bot_username:
+                pass
+
             else:
-                to_check = redditObject.selftext.lower() + " " + redditObject.title.lower()
 
-            if "vizzy t" in to_check or "vissy t" in to_check:
-                response = ""
-                while not response:
+                if "vizzy t" in to_check or "vissy t" in to_check:
+                    response = ""
+
+                    # Generate the response
+                    while not response:
+                        seed()
+                        num = randint(0, len(self.quotes) - 1)
+                        if datetime.now().hour != self.posted_hour or len(self.posted) > len(self.quotes) - 5:
+                            self.posted = []
+                            self.posted_hour = datetime.now().hour
+
+                        if num in self.posted:
+                            pass
+                        else:
+                            try:
+                                if "hot fuzz" in to_check:
+                                    num = randint(0, len(self.hf) - 1)
+                                    response = self.hf[num]
+                                else:
+                                    response = self.quotes[num]
+
+                                if "{}" in response:
+                                    response = response.format(redditObject.author.name)
+
+                                redditObject.reply(body=response)
+                                self.posted.append(num)
+                                redditObject.upvote()
+                                writeComment(redditObject.id)
+                                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                                self.send_webhook(link)
+                            except Exception as e:
+                                print(e)
+                                link = F'ERROR - {e}\nLink - https://www.reddit.com{redditObject.permalink}'
+                                self.send_webhook(link)
+                elif "the whore is pregnant!" in to_check:
                     seed()
-                    num = randint(0, len(self.quotes) - 1)
-                    if datetime.now().hour != self.posted_hour or len(self.posted) > len(self.quotes) - 5:
-                        self.posted = []
-                        self.posted_hour = datetime.now().hour
-
-                    if num in self.posted:
-                        pass
-                    else:
-                        try:
-                            if "hot fuzz" in to_check:
-                                num = randint(0, len(self.hf) - 1)
-                                response = self.hf[num]
-                            else:
-                                response = self.quotes[num]
-                            if "{}" in response:
-                                response = response.format(redditObject.author.name)
-                            redditObject.reply(body=response)
-                            self.posted.append(num)
-                            redditObject.upvote()
-                            writeComment(redditObject.id)
-                            link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{response}'** \nLink - https://www.reddit.com{redditObject.permalink}"
-                            self.send_webhook(link)
-                        except Exception as e:
-                            print(e)
-                            link = F'ERROR - {e}\nLink - https://www.reddit.com{redditObject.permalink}'
-                            self.send_webhook(link)
-            elif "the whore is pregnant!" in to_check:
-                seed()
-                bobby_b_responses = ['I’ll have your tongue for that!',"GODS BE GOOD!!","*I WILL HAVE YOUR TONGUE FOR THAT!*","This is a lie. You have been lied to.","*There's a boy in the Queen's belly. I know it.*","*Then he will be loved and cherished.*",]
-                num = randint(0, len(bobby_b_responses) - 1)
-                redditObject.reply(body=bobby_b_responses[num])
-                writeComment(redditObject.id)
-                redditObject.upvote()
-                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{bobby_b_responses[num]}'** \nLink - https://www.reddit.com{redditObject.permalink}"
-                self.send_webhook(link)
-            elif "you've got a mustache" in to_check:
-                redditObject.reply(body="**I KNOW**")
-                writeComment(redditObject.id)
-                redditObject.upvote()
-                link = f"\n{redditObject.author.name}: {to_check}\nResponse: **I KNOW** \nLink - https://www.reddit.com{redditObject.permalink}"
-                self.send_webhook(link)
+                    bobby_b_responses = ['I’ll have your tongue for that!',"GODS BE GOOD!!","*I WILL HAVE YOUR TONGUE FOR THAT!*","This is a lie. You have been lied to.","*There's a boy in the Queen's belly. I know it.*","*Then he will be loved and cherished.*",]
+                    num = randint(0, len(bobby_b_responses) - 1)
+                    redditObject.reply(body=bobby_b_responses[num])
+                    writeComment(redditObject.id)
+                    redditObject.upvote()
+                    link = f"\n{redditObject.author.name}: {to_check}\nResponse: **'{bobby_b_responses[num]}'** \nLink - https://www.reddit.com{redditObject.permalink}"
+                    self.send_webhook(link)
+                elif "you've got a mustache" in to_check:
+                    redditObject.reply(body="**I KNOW**")
+                    writeComment(redditObject.id)
+                    redditObject.upvote()
+                    link = f"\n{redditObject.author.name}: {to_check}\nResponse: **I KNOW** \nLink - https://www.reddit.com{redditObject.permalink}"
+                    self.send_webhook(link)
 
 
 
     def run(self):
-        for comment in self.subreddit.stream.comments():
-            self.vizzytime(comment, "comment")
+        for obj in self.stream:
+            self.vizzytime(obj)
             requests.get('https://hc-ping.com/9d4dd9b0-7d3d-4694-8704-aa207c346793')
 
 VIZZY_T()

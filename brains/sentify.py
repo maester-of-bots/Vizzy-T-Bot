@@ -1,8 +1,117 @@
-from sql import *
-from dotenv import load_dotenv
-import os
 import praw
-import json
+import os
+from random import *
+from dotenv import load_dotenv
+
+from quotes import quotes
+from sql import *
+from brains.utils import makePrompt, be_sentient
+load_dotenv()
+
+# Set the bot's username
+bot_username = os.getenv('vizzy_username')
+
+webhook_url = os.getenv('vizzy_webhook')
+
+# Initialize a Reddit object
+reddit = praw.Reddit(
+    client_id=os.getenv('vizzy_client_id'),
+    client_secret=os.getenv('vizzy_client_secret'),
+    password=os.getenv('vizzy_password'),
+    user_agent=os.getenv('vizzy_user_agent'),
+    username=bot_username
+)
+
+
+
+def submissions_and_comments(subreddit, **kwargs):
+    results = []
+    results.extend(subreddit.new(**kwargs))
+    results.extend(subreddit.comments(**kwargs))
+    results.sort(key=lambda post: post.created_utc, reverse=True)
+    return results
+
+
+def isPost(obj):
+    return isinstance(obj,praw.models.Submission)
+
+def isComment(obj):
+    return isinstance(obj,praw.models.Comment)
+
+def triggered(text):
+    return "vizzy t" in text or "vissy t" in text
+
+def sentient(obj):
+    """
+    0 is a submission
+    1 Vizzy T how do you feel about this?
+    2 Vizzy T responds
+    3 Vizzy T, your daughter is fucking your brother!
+    4 Vizzy T Response
+    5 Any deeper than four should result in sentience if the user didn't just say "Vizzy T"
+
+    """
+
+    current = obj
+    vizzy_count = 0
+
+    for i in range(0,5):
+
+        if current.author.name.lower() == "vizzy_t_bot":
+            vizzy_count += 1
+
+        if isinstance(current,praw.models.Submission):
+            return 0
+
+        elif i >= 4 and vizzy_count >= 2:
+            return 1
+
+        else:
+            current = current.parent()
+
+
+
+subreddit = reddit.subreddit('vizzy_t_test')
+
+stream = praw.models.util.stream_generator(lambda **kwargs: submissions_and_comments(subreddit, **kwargs))
+
+for obj in stream:
+
+    if isComment(obj):
+        user_text = obj.body.lower()
+    else:
+        user_text = obj.title.lower() + "\n" + obj.selftext.lower()
+
+        if triggered(user_text):
+
+            if sentient(obj) and len(user_text.replace('vizzy t','').split(' ') > 2):
+                prompt = makePrompt(obj)
+                sentience = be_sentient(prompt)
+
+
+            else:
+                seed()
+                num = randint(0, len(quotes) - 1)
+                response = quotes[num]
+                if "{}" in response:
+                    response = response.format(obj.author.name)
+
+            obj.reply(body=response)
+            obj.upvote()
+            writeComment(obj.id)
+
+            body = f"Sentience used - https://www.reddit.com{obj.permalink}\n\n"
+            data = {'content': body, 'username': 'VIZZY-T-BOT'}
+            requests.post(webhook_url, data=data)
+
+
+
+
+
+
+
+
+'''
 
 
 if not os.path.exists('vizzy_sentient.json'):
@@ -193,3 +302,6 @@ for key in test_dict.keys():
         pass
     else:
         print(f"{key} --- {test_dict[key]}\n\n")
+
+
+'''

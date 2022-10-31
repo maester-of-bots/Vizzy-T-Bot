@@ -1,0 +1,3 @@
+praw
+OpenAI
+python_dotenv

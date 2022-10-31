@@ -30,6 +30,7 @@ def init_sqlite():
     conn = sqlite3.connect(dbfolder + dbname)
     c = conn.cursor()
     c.execute('''CREATE TABLE comments (id text)''')
+    c.execute('''CREATE TABLE depleted (id text)''')
 
 def getComments():
     """Get all comment IDs from the comments table
@@ -40,6 +41,18 @@ def getComments():
     sqlite_connect()
     c = conn.cursor()
     c.execute("""SELECT id FROM comments""")
+    result = c.fetchall()
+    return result
+
+def getCommentsdepleted():
+    """Get all comment IDs from the comments table
+
+    :return list: All comment IDs.
+    """
+
+    sqlite_connect()
+    c = conn.cursor()
+    c.execute("""SELECT id FROM depleted""")
     result = c.fetchall()
     return result
 
@@ -54,6 +67,20 @@ def writeComment(id):
     c = conn.cursor()
     q = [(id)]
     c.execute('''INSERT INTO comments('id') VALUES(?)''', q)
+    conn.commit()
+    conn.close()
+
+
+def writeCommentdepleted(id):
+    """Write a comment ID to the comments table
+
+    :param str id:  The comment ID to record
+    """
+
+    sqlite_connect()
+    c = conn.cursor()
+    q = [(id)]
+    c.execute('''INSERT INTO depleted('id') VALUES(?)''', q)
     conn.commit()
     conn.close()
 

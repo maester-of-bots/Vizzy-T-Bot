@@ -98,13 +98,8 @@ class VIZZY_T:
                 if isinstance(current, praw.models.Submission):
                     return False
 
-                elif i >= 4 and vizzy_count >= 2:
-                    # print(f"This is a level {i} comment and we're going to be sentient.")
+                elif i >= 4:
                     return True
-
-                elif i >= 4 and vizzy_count <= 2:
-                    # print(f"This is a level {i} comment and we're not going to be sentient because Vizzy wasn't involved in the conversation twice.")
-                    return False
 
                 else:
                     current = current.parent()
@@ -217,9 +212,7 @@ class VIZZY_T:
 
         writeComment(redditObject.id)
 
-        body = f"Residual Sentience used by {redditObject.author.name} - {cost}\n"
-
-        body += f"https://www.reddit.com{redditObject.permalink}\n\n"
+        body = f"Residual Sentience used by {redditObject.author.name} - {cost}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
 
         data = {'content': body, 'username': 'VIZZY-T-BOT'}
 
@@ -353,15 +346,20 @@ class VIZZY_T:
             return
 
         else:
+
+            print(redditObject.subreddit)
+
+
             user_text, grandparent, residual_sentience, triggered = self.firstlook(redditObject)
 
-
-            '''
-            If there's a normal Vizzy T trigger on a non-sentient post
-            
-            He'll evaluate sentience and then make a normal response or a sentient response.
-            '''
-            if triggered and not residual_sentience:
+            if redditObject.subreddit.display_name == "stonkyMEMES" and redditObject.author.name.lower == 'realpoik':
+                self.response_sentient(redditObject)
+            elif triggered and not residual_sentience:
+                '''
+                If there's a normal Vizzy T trigger on a non-sentient post
+                
+                He'll evaluate sentience and then make a normal response or a sentient response.
+                '''
                 print("Triggered")
 
                 word_count = len(user_text.replace('vizzy t', '').split(' '))
@@ -387,6 +385,9 @@ class VIZZY_T:
                 # Yell at Bobby B.
                 self.response_sentient(redditObject)
 
+            else:
+                print("We are not going to comment on this post.")
+                print(redditObject.permalink)
 
     def run(self):
         for obj in self.stream:

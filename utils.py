@@ -29,7 +29,7 @@ def checkTime(obj):
     time = obj.created
     timestamp = datetime.fromtimestamp(time)
     # print(timestamp)
-    if (datetime.now() - timedelta(hours=1)) < timestamp:
+    if (datetime.now() - timedelta(hours=7)) < timestamp:
         return True
     else:
         # print("Skipping old comment.")

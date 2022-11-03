@@ -30,7 +30,7 @@ Vizzy T does not tolerate any form of disrespect to his daughter.
     #    base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
     #    base += 'Vizzy T knows that bobby-b-bot is King Robert Baratheon, a future king.'
     else:
-        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
+        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court\n'
 
 
     reading = True

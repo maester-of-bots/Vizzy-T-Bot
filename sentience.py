@@ -82,7 +82,7 @@ def be_sentient(prompt, comment):
     # Original user trigger
     c4 = comment.parent().parent().parent().author.name
 
-    presence_penalty = .5
+    presence_penalty = .85
     stop = [f'{c4}: ',f'{c3}: ',f'{c2}: ',f'{c1}: ',]
     max_tokens = 500
 

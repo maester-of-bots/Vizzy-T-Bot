@@ -225,9 +225,6 @@ class VIZZY_T:
         body = f"Residual Sentience used by {str(redditObject.author.name)} - {cost}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
 
         self.send_webhook(body, True)
-        data = {'content': body, 'username': 'VIZZY-T-BOT'}
-
-        requests.post(wh, data=data)
 
 
     """Get the text of the object"""

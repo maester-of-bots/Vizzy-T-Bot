@@ -82,9 +82,17 @@ def be_sentient(prompt, comment):
     # Original user trigger
     c4 = comment.parent().parent().parent().author.name
 
+
+    stop = []
+    tmep = [c1,c2,c3,c4]
+    for x in tmep:
+        if f'{x}: ' not in stop:
+            stop.append(f'{x}: ')
+
+
     presence_penalty = .85
     stop = [f'{c4}: ',f'{c3}: ',f'{c2}: ',f'{c1}: ',]
-    max_tokens = 500
+    max_tokens = 2222
 
     # Generate the raw response data
     data = openai.Completion.create(engine="text-davinci-002",

@@ -170,7 +170,7 @@ class VIZZY_T:
             if "Vizzy T" in response or "vizzy t" in response or "vizzy_t_bot" in response or "Vizzy_T_Bot" in response:
                 response= response.lower().replace("vizzy t","")
 
-            cost_line = cost * 0.00002
+            cost_line = format(cost * 0.00002,'.6f')
 
             cost_text = f"This action cost ${cost_line} to generate."
 

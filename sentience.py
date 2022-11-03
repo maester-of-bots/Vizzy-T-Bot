@@ -102,6 +102,8 @@ def be_sentient(prompt, comment):
 
     parsed += "\n\n^(This response generated with OpenAI)"
 
+    format(1.29578293, '.6f')
+
     # Get token cost
     cost = data['usage']['total_tokens']
 

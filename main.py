@@ -167,10 +167,12 @@ class VIZZY_T:
                 response= response.lower().replace("vizzy t","")
 
             cost_line = cost * 0.00002
-            
+
+            cost_text = f"This action cost ${cost_line} to generate."
+
             body = f"Sentience invoked by {str(redditObject.author.name)} - ${cost_line}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
             redditObject.reply(body=response)
-            # redditObject.upvote()
+            redditObject.upvote()
             writeComment(redditObject.id)
             self.send_webhook(body, True)
 
@@ -180,9 +182,6 @@ class VIZZY_T:
 
     """Sending a sentient followup"""
     def response_sentient_followup(self,redditObject, grandparent):
-        # Get Sentient webhook
-        wh = self.sentient_webhook_url
-
         # Mark comment as depleted
         writeCommentdepleted(grandparent.id)
         print("Wrote comment to depleted")
@@ -191,9 +190,6 @@ class VIZZY_T:
         try:
             if redditObject.author.name not in self.sentience_log[redditObject.author.name].keys():
                 self.sentience_log[redditObject.author.name] = 0
-
-
-
             self.sentience_log[redditObject.author.name] +=1
         except:
             print("There was an issue adding to the log.")
@@ -219,7 +215,7 @@ class VIZZY_T:
         # Do Redit Stuff
         print("Replying")
         redditObject.reply(body=response)
-        # redditObject.upvote()
+        redditObject.upvote()
 
         print("Saving")
         writeComment(redditObject.id)

@@ -26,9 +26,9 @@ Vizzy T does not tolerate any form of disrespect to his daughter.
         base += f"Vizzy T treats {comment.author.name} with mutual respect but also suspicion, as {comment.author.name} could challenge his reign.\n"
     # elif "open_profit_close" in comment.author.name.lower():
         # base += f"Vizzy T recognizes {comment.author.name} as a Usurper King and will attempt to jail and execute him."
-    elif ("bobby-b-bot" in comment.author.name.lower()) or ("bobby-b-bot" in comment.body.lower()) or ("bobby b" in comment.body.lower()) or ("bobby-b" in comment.body.lower()):
-        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
-        base += 'Vizzy T knows that bobby-b-bot is King Robert Baratheon, a future king.'
+    #elif ("bobby-b-bot" in comment.author.name.lower()) or ("bobby-b-bot" in comment.body.lower()) or ("bobby b" in comment.body.lower()) or ("bobby-b" in comment.body.lower()):
+    #    base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
+    #    base += 'Vizzy T knows that bobby-b-bot is King Robert Baratheon, a future king.'
     else:
         base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
 

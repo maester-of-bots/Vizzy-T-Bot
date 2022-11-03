@@ -166,7 +166,9 @@ class VIZZY_T:
             if "Vizzy T" in response or "vizzy t" in response or "vizzy_t_bot" in response or "Vizzy_T_Bot" in response:
                 response= response.lower().replace("vizzy t","")
 
-            body = f"Sentience invoked by {redditObject.author.name} - {cost}\n\nLink - https://www.reddit.com{redditObject.permalink}"
+            cost_line = cost * 0.00002
+            
+            body = f"Sentience invoked by {str(redditObject.author.name)} - ${cost_line}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
             redditObject.reply(body=response)
             # redditObject.upvote()
             writeComment(redditObject.id)
@@ -222,7 +224,9 @@ class VIZZY_T:
         print("Saving")
         writeComment(redditObject.id)
 
-        body = f"Residual Sentience used by {str(redditObject.author.name)} - {cost}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
+        cost_line = cost * 0.00002
+
+        body = f"Residual Sentience used by {str(redditObject.author.name)} - ${cost_line}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
 
         self.send_webhook(body, True)
 

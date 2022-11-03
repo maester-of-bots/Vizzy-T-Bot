@@ -49,19 +49,23 @@ class VIZZY_T:
         self.last_cleaned = datetime.now()
 
     def send_errors(self, body, comment):
-        body = "Vizzy T Crash Report - " + str(body)
-        """Use webhooks to notify admin on Discord"""
-        data = {'content': body, 'username': 'BOFH'}
-        requests.post(self.bofh, data=data)
-        if "RATELIMIT" in str(body):
-            user = self.army['tyrion-dwarfbot']
-            res = "Apologies ser, but the King ~~has been rate-limited~~ is more heavily sedated today and may miss tags.  You have the Crown's deepest regrets for this inconvenience."
-            dwarf_comment = user['reddit'].comment(id=comment.id)
-            dwarf_comment.reply(body=res)
-            writeComment(comment.id)
-            link = f"\n{comment.author.name}: \nResponse: **'{res}'** \nLink - https://www.reddit.com{comment.permalink}"
-            data = {'content': link, 'username': 'BOFH'}
+        if "NoneType' object has no attribute 'name" in str(body):
+            pass
+        else:
+            print(body)
+            body = "Vizzy T Crash Report - " + str(body)
+            """Use webhooks to notify admin on Discord"""
+            data = {'content': body, 'username': 'BOFH'}
             requests.post(self.bofh, data=data)
+            if "RATELIMIT" in str(body):
+                user = self.army['tyrion-dwarfbot']
+                res = "Apologies ser, but the King ~~has been rate-limited~~ is more heavily sedated today and may miss tags.  You have the Crown's deepest regrets for this inconvenience."
+                dwarf_comment = user['reddit'].comment(id=comment.id)
+                dwarf_comment.reply(body=res)
+                writeComment(comment.id)
+                link = f"\n{comment.author.name}: \nResponse: **'{res}'** \nLink - https://www.reddit.com{comment.permalink}"
+                data = {'content': link, 'username': 'BOFH'}
+                requests.post(self.bofh, data=data)
 
 
     def check_sentLog(self,obj):

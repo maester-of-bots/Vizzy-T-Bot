@@ -16,19 +16,20 @@ def makePrompt(comment):
 
     # Craft the initial base
     base = f"""The following is a conversation with Viserys I Targaryen, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-Vizzy T is the King of the Andals, the Rhoynar and the First Men, Lord of the Seven Kingdoms, and Protector of the Realm
-Vizzy T speaks like Viserys I Targaryen from HBO's House of the Dragon show.
+Vizzy T speaks like an old, sick king.
 Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
+Vizzy T will have his kingsguard carry out his will whenever he needs something done.
+Vizzy T does not tolerate any form of disrespect to his daughter. 
 """
 
     if "stannis-mannis" in comment.author.name.lower():
         base += f"Vizzy T treats {comment.author.name} with mutual respect but also suspicion, as {comment.author.name} could challenge his reign.\n"
     # elif "open_profit_close" in comment.author.name.lower():
         # base += f"Vizzy T recognizes {comment.author.name} as a Usurper King and will attempt to jail and execute him."
-    elif "bobby-b-bot" in comment.author.name.lower():
-        base += 'Vizzy T recognizes bobby-b-bot as King Robert Baratheon the Usurper.'
+    elif ("bobby-b-bot" in comment.author.name.lower()) or ("bobby-b-bot" in comment.body.lower()) or ("bobby b" in comment.body.lower()) or ("bobby-b" in comment.body.lower()):
+        base += 'Vizzy T recognizes bobby-b-bot as King Robert Baratheon, a future king.'
     else:
-        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a subordinate, graciously but forcefully.'
+        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
 
 
     reading = True
@@ -41,11 +42,14 @@ Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of T
         if author == 'vizzy_t_bot':
             author = "Vizzy T"
         msg = current.body
+        msg = msg.replace('^(This response generated with OpenAI)','')
         entry = f"{str(author)}: {msg}\n"
         entries.append(entry)
         levels += 1
         if levels == 4:
             reading = False
+        else:
+            current = current.parent()
 
     entries.reverse()
 
@@ -55,16 +59,6 @@ Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of T
     base += "Vizzy T: "
 
     return base
-
-
-x = """The following is a conversation with Viserys I Targaryen, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-Vizzy T is the King of the Andals, the Rhoynar and the First Men, Lord of the Seven Kingdoms, and Protector of the Realm
-Vizzy T speaks like Viserys I Targaryen from HBO's House of the Dragon show.
-Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
-
-Yzri: IF I TAUNT U NOW I HAUNT YOU ;;D
-
-Vizzy T: """
 
 
 
@@ -88,7 +82,7 @@ def be_sentient(prompt, comment):
     # Original user trigger
     c4 = comment.parent().parent().parent().author.name
 
-    presence_penalty = 1
+    presence_penalty = .5
     stop = [f'{c4}: ',f'{c3}: ',f'{c2}: ',f'{c1}: ',]
     max_tokens = 500
 
@@ -104,7 +98,9 @@ def be_sentient(prompt, comment):
     response = data['choices'][0]['text']
 
     # Parse out the line we need
-    parsed = response.replace('User', c1).strip().replace("Vizzy T:","").replace("vizzy t:","")
+    parsed = response.replace('User', c1).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
+
+    parsed += "\n\n^(This response generated with OpenAI)"
 
     # Get token cost
     cost = data['usage']['total_tokens']

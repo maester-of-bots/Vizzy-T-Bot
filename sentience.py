@@ -38,7 +38,7 @@ Vizzy T does not tolerate any form of disrespect to his daughter.
     entries = []
 
     while reading:
-        author = current.author.name
+        author = current.author.name.lower()
         if author == 'vizzy_t_bot':
             author = "Vizzy T"
         msg = current.body

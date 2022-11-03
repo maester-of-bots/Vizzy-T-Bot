@@ -292,7 +292,7 @@ class VIZZY_T:
                 # Read in sentient comments that have been depleted
                 # print("Checking Depleted")
                 depleted = getCommentsdepleted()
-                if parent.id not in depleted and '^(this response generated with openai)' in grandparent.body.lower():
+                if parent.id not in depleted and '^(this response generated with openai)' in parent.body.lower():
                     if self.check_sentience(redditObject,False,True):
                         residual_sentience = True
                     else:

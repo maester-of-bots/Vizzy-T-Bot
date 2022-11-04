@@ -91,7 +91,7 @@ def be_sentient(prompt, comment):
             stop.append(f'{x}: ')
 
 
-    presence_penalty = .85
+    presence_penalty = .6
     stop = [f'{c4}: ',f'{c3}: ',f'{c2}: ',f'{c1}: ',]
     max_tokens = 2222
 
@@ -100,7 +100,7 @@ def be_sentient(prompt, comment):
                                     prompt=prompt,
                                     max_tokens=max_tokens,
                                     presence_penalty=presence_penalty,
-                                    temperature=1,
+                                    temperature=.9,
                                     stop=stop)
 
     # Grab the response out of the data dict

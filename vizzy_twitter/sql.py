@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 
 # Initial local file config
-dbname = "VizzyTDB.db"
+dbname = "VizzyTwitter.db"
 dbfolder = "db/"
 
 # Create the local database folder if it doesn't exist

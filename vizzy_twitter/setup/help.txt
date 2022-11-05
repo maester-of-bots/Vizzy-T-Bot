@@ -1,0 +1,13 @@
+Navigate to https://developer.twitter.com/en/portal/projects-and-apps
+
+Create a project, create an app, blah blah blah
+
+Open App Settings, and go to "User Authentication Settings" and click "Set up"
+
+Choose what you need (Read and write, usually), then "Web App, Automated App, or Bot".  The rest of the info is not relevant to a basic bot - redirect URI is for logging into the app, which we don't need to do.
+
+Click "Save"
+
+Apply for Elevated Access here - Can't find a link, google it or reference https://twittercommunity.com/t/cannot-access-api-from-python-unauthorised-error/172872
+
+Grab API keys.  You want the USER ID and Key, NOT OAUTH

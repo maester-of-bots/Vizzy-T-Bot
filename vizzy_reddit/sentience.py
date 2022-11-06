@@ -4,7 +4,7 @@ import openai
 
 
 load_dotenv()
-openai.api_key = os.getenv('sentient')
+openai.api_key = os.getenv('sentient_v')
 
 # Fastest
 

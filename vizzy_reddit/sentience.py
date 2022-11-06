@@ -6,13 +6,57 @@ import openai
 load_dotenv()
 openai.api_key = os.getenv('sentient')
 
-#
-# Vizzy T has Kingsguard who carry out his orders.
-# Vizzy T's family includes his daughter Rhaenyra, his brother Daemon, and his wife Alicent, as well as his grandchildren from Rhaenya.
-# Vizzy T's interests include tapestries and miniatures.
-# Vizzy T loves his family nd will become enraged and threaten anyone who speaks negatively about his family.  Threats include cutting out their tongue and eyes.
+# Fastest
 
-def makePrompt(comment):
+openai_models = {
+    "ada": {
+        "1000": 0.0004,
+        "1": 0.0004/1000,
+        "name": 'text-ada-001'
+    },
+    "babbage": {
+        "1000": 0.0005,
+        "1": 0.0005/1000,
+        "name": 'text-babbage-001'
+    },
+    "curie": {
+        "1000": 0.0020,
+        "1": 0.0020/1000,
+        "name": 'text-curie-001'
+    },
+    "davinci": {
+        "1000": 0.0200,
+        "1": 0.0200/1000,
+        "name": 'text-davinci-002'
+    },
+}
+
+
+def tokenCalculator(comment, model):
+    """ Return the amount of tokens this comment would represent"""
+    spaces = comment.count(' ')
+    words = len(comment)
+    chars = words - spaces
+    tokens = chars / 4
+
+    # Dollar amounts
+    costs = {
+        "ada": tokens * openai_models["ada"]["1"],
+        "babbage": tokens * openai_models["babbage"]["1"],
+        "curie": tokens * openai_models["curie"]["1"],
+        "davinci": tokens * openai_models["davinci"]["1"],
+    }
+
+    return tokens, costs[model]
+
+
+
+
+
+
+
+
+def get_sentient(comment, model):
 
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
@@ -24,11 +68,6 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
 
     if "stannis-mannis" in comment.author.name.lower():
         base += f"Vizzy T treats {comment.author.name} with mutual respect but also suspicion, as {comment.author.name} could challenge his reign.\n"
-    # elif "open_profit_close" in comment.author.name.lower():
-        # base += f"Vizzy T recognizes {comment.author.name} as a Usurper King and will attempt to jail and execute him."
-    #elif ("bobby-b-bot" in comment.author.name.lower()) or ("bobby-b-bot" in comment.body.lower()) or ("bobby b" in comment.body.lower()) or ("bobby-b" in comment.body.lower()):
-    #    base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court'
-    #    base += 'Vizzy T knows that bobby-b-bot is King Robert Baratheon, a future king.'
     else:
         base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court\n'
 
@@ -38,19 +77,40 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
     levels = 0
     entries = []
 
+    total_count = 0
+
+    stop = []
+
+
     while reading:
         author = current.author.name.lower()
         if author == 'vizzy_t_bot':
             author = "Vizzy T"
-        msg = current.body
-        msg = msg.replace('^(This response generated with OpenAI)','')
+
+        if f'{author}: ' not in stop:
+            stop.append(f'{author}: ')
+
+        msg = current.body.replace('^(This response generated with OpenAI)','')
+
+        # Don't read past a comment that's 500 tokens or more
+        tokens, costs = tokenCalculator(msg, model)
+
+        if tokens > 500 or total_count > 1000:
+            reading = False
+        else:
+            total_count += tokens
+
         entry = f"{str(author)}: {msg}\n"
         entries.append(entry)
+
         levels += 1
+
         if levels == 4:
             reading = False
         else:
             current = current.parent()
+
+    addition = .1 * len(entries)
 
     entries.reverse()
 
@@ -59,45 +119,17 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
 
     base += "Vizzy T: "
 
-    return base
-
-
-
-def be_sentient(prompt, comment):
-    """
-    Takes in prompt, author's name, bot's short name, and the parent author.  Spits out a response and how much it cost.
-
-    """
-
     print("Making sentience")
 
-    # Recent trigger
-    c1 = comment.author.name
+    presence_penalty_base = .6
 
-    # Bot response above
-    c2 = comment.parent().author.name
+    presence_penalty = presence_penalty_base + addition
 
-    # Original user trigger
-    c3 = comment.parent().parent().author.name
-
-    # Original user trigger
-    c4 = comment.parent().parent().parent().author.name
-
-
-    stop = []
-    tmep = [c1,c2,c3,c4]
-    for x in tmep:
-        if f'{x}: ' not in stop:
-            stop.append(f'{x}: ')
-
-
-    presence_penalty = .6
-    stop = [f'{c4}: ',f'{c3}: ',f'{c2}: ',f'{c1}: ',]
-    max_tokens = 2222
+    max_tokens = 750
 
     # Generate the raw response data
-    data = openai.Completion.create(engine="text-davinci-002",
-                                    prompt=prompt,
+    data = openai.Completion.create(engine=openai_models[model]['name'],
+                                    prompt=base,
                                     max_tokens=max_tokens,
                                     presence_penalty=presence_penalty,
                                     temperature=.9,
@@ -107,13 +139,11 @@ def be_sentient(prompt, comment):
     response = data['choices'][0]['text']
 
     # Parse out the line we need
-    parsed = response.replace('User', c1).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
+    parsed = response.replace('User', comment.author.name).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
 
-    parsed += "\n\n^(This response generated with OpenAI)"
+    parsed += f"\n\n^(This response generated with OpenAI [{model.capitalize()}])"
 
-    format(1.29578293, '.6f')
-
-    # Get token cost
+    # Get token cost, and round it to six places.
     cost = data['usage']['total_tokens']
 
     return parsed, cost

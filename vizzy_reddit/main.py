@@ -13,8 +13,6 @@ class VIZZY_T:
         # Set the bot's username
         self.bot_username = os.getenv('vizzy_username')
 
-        self.webhook_url = os.getenv('vizzy_webhook')
-
         # Initialize a Reddit object
         self.reddit = praw.Reddit(
             client_id=os.getenv('vizzy_client_id'),
@@ -25,13 +23,15 @@ class VIZZY_T:
         )
 
         # Get special webhook for sending sentience notifications
-        self.sentient_webhook_url = os.getenv('sentient_webhook')
+        self.webhook_sentient = os.getenv('webhook_sentient')
 
-        self.bofh = os.getenv('bofh_webhook')
+        self.webhook_bofh = os.getenv('webhook_bofh')
+
+        self.webhook_babysitter = os.getenv('webhook_babysitter')
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolksimulator+freefolk+HouseOfTheDragon+BSFT')
-        # self.subreddit = self.reddit.subreddit('vizzy_t_test')
+        # self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolksimulator+freefolk+HouseOfTheDragon+BSFT')
+        self.subreddit = self.reddit.subreddit('freefolksimulator_TST')
 
         # Pull in quotes from quotes.py
         self.quotes = quotes
@@ -49,38 +49,44 @@ class VIZZY_T:
         self.last_cleaned = datetime.now()
 
     def send_errors(self, body, comment):
+        """Use webhooks to notify admin on Discord"""
+
         if "NoneType' object has no attribute 'name" in str(body):
             pass
         else:
             print(body)
-            body = "Vizzy T Crash Report - " + str(body)
-            """Use webhooks to notify admin on Discord"""
-            data = {'content': body, 'username': 'BOFH'}
-            requests.post(self.bofh, data=data)
+            body = f"{body}\nhttps://www.reddit.com{comment.permalink}"
+
             if "RATELIMIT" in str(body):
                 user = self.army['tyrion-dwarfbot']
                 res = "Apologies ser, but the King ~~has been rate-limited~~ is more heavily sedated today and may miss tags.  You have the Crown's deepest regrets for this inconvenience."
                 dwarf_comment = user['reddit'].comment(id=comment.id)
                 dwarf_comment.reply(body=res)
                 writeComment(comment.id)
-                link = f"\n{comment.author.name}: \nResponse: **'{res}'** \nLink - https://www.reddit.com{comment.permalink}"
-                data = {'content': link, 'username': 'BOFH'}
-                requests.post(self.bofh, data=data)
+                body += "\nLord Tyrion has apologized for the crown."
+
+
+            data = {'content': body, 'username': 'BOFH'}
+            requests.post(self.webhook_bofh, data=data)
+
 
 
     def check_sentLog(self,obj):
-        if self.last_cleaned + timedelta(minutes=30) < datetime.now():
+
+        # Reset log every four hours
+        if self.last_cleaned + timedelta(hours=4) < datetime.now():
             self.sentience_log = {}
             self.last_cleaned = datetime.now()
             print(f"Cleaned the sentience log at {self.last_cleaned}")
 
-        print(self.sentience_log)
+        print(f"Sentience Log:\n{self.sentience_log}")
 
         if obj.author.name not in self.sentience_log:
             self.sentience_log[obj.author.name] = 0
             return True
 
-        elif self.sentience_log[obj.author.name] > 10:
+        # This amounts to about 4-5 comments with Vizzy using the DaVinci model, and then 200-250 comments (Check the math on that lol) using the Ada model.
+        elif self.sentience_log[obj.author.name] > 5000:
             return False
 
         else:
@@ -125,13 +131,14 @@ class VIZZY_T:
             return self.check_sentLog(obj)
         elif depth:
             return self.check_depth(obj)
+
     def send_webhook(self, body, sentient=False):
         if sentient:
-            url = self.sentient_webhook_url
+            url = self.webhook_sentient
             data = {'content': body, 'username': 'Sentient Vizzy T'}
         else:
-            url = self.webhook_url
-            data = {'content': body, 'username': 'Canon Vizzy T'}
+            url = self.webhook_babysitter
+            data = {'content': body, 'username': 'FFS Babysitter'}
 
         requests.post(url, data=data)
 
@@ -156,13 +163,35 @@ class VIZZY_T:
             self.send_errors(body, comment)
 
 
-    """Sending a sentient response"""
-    def response_sentient(self,redditObject):
-        try:
-            prompt = makePrompt(redditObject)
-            response, cost = be_sentient(prompt, redditObject)
+    def sentience_log_add(self,author, cost):
+        if author not in self.sentience_log.keys():
+            self.sentience_log[author] = cost
+        else:
+            self.sentience_log[author] += cost
 
-            self.sentience_log[redditObject.author.name] += 1
+    """Sending a sentient response"""
+    def response_sentient(self,redditObject, residual=False):
+        if residual:
+
+            writeCommentdepleted(redditObject.parent().id)
+            print("Wrote comment to depleted.")
+
+        user_tokens = self.sentience_log[redditObject.author.name]
+
+        # Returns the response and how many tokens it cost
+        if user_tokens < 2500:
+            sentient = True
+            model = 'davinci'
+            per_token = 0.0200 / 1000
+
+            # Make the response based on the comment and the model
+            response, token_cost = get_sentient(redditObject, model)
+
+            # Cut down to six decimals about all that matters
+            dollar_cost = format(token_cost*per_token, '.6f')
+            print(f"Sentience Response: {response}")
+            self.sentience_log_add(redditObject.author.name,token_cost)
+            print("Logged user usage of sentience.")
 
             if f"{redditObject.author.name}: " in response:
                 response = response.split(f"{redditObject.author.name}: ")[0]
@@ -170,65 +199,39 @@ class VIZZY_T:
             if "Vizzy T" in response or "vizzy t" in response or "vizzy_t_bot" in response or "Vizzy_T_Bot" in response:
                 response= response.lower().replace("vizzy t","")
 
-            cost_line = format(cost * 0.00002,'.6f')
+            cost_text = f"This action cost ${dollar_cost} to generate."
 
-            cost_text = f"This action cost ${cost_line} to generate."
+            body = f"Sentience invoked by {str(redditObject.author.name)} - {redditObject.author.name}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n${cost_text}\n"
 
-            body = f"Sentience invoked by {str(redditObject.author.name)} - ${cost_line}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
+            if residual:
+                body = "Residual " + body
+
+            # Reply to the comment
             redditObject.reply(body=response)
+
+            # Upvote the comment
             redditObject.upvote()
+
+            # Log the comment as commented on
             writeComment(redditObject.id)
-            self.send_webhook(body, True)
 
-        except Exception as e:
-            body = "https://www.reddit.com"+redditObject.permalink + " - " + str(e)
-            self.send_errors(body, redditObject)
+            # Notify
+            self.send_webhook(body, sentient)
 
-    """Sending a sentient followup"""
-    def response_sentient_followup(self,redditObject, grandparent):
-        # Mark comment as depleted
-        writeCommentdepleted(grandparent.id)
-        print("Wrote comment to depleted")
+        else:
 
-        # Add to the sentience log
-        try:
-            if redditObject.author.name not in self.sentience_log[redditObject.author.name].keys():
-                self.sentience_log[redditObject.author.name] = 0
-            self.sentience_log[redditObject.author.name] +=1
-        except:
-            print("There was an issue adding to the log.")
-
-        print("Added user to log")
+            self.response_canon(redditObject)
 
 
-        # Generate the prompt
-        prompt = makePrompt(redditObject)
-        print("Got prompt")
-        print(prompt)
 
-        # Make the response
-        print("Got response")
-        response, cost = be_sentient(prompt, redditObject)
 
-        print(f"Sentience Response: {response}")
 
-        # clean up
-        if f"{redditObject.author.name}: " in response:
-            response = response.split(f"{redditObject.author.name}: ")[0]
 
-        # Do Redit Stuff
-        print("Replying")
-        redditObject.reply(body=response)
-        redditObject.upvote()
 
-        print("Saving")
-        writeComment(redditObject.id)
 
-        cost_line = cost * 0.00002
 
-        body = f"Residual Sentience used by {str(redditObject.author.name)} - ${cost_line}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n\n"
 
-        self.send_webhook(body, True)
+
 
 
     """Get the text of the object"""
@@ -286,35 +289,40 @@ class VIZZY_T:
         if parent.author.name.lower() == "vizzy_t_bot":
 
             try:
-                # This is the comment that triggered the Vizzy comment we're trying to assess
-                grandparent = parent.parent()
-
                 # If this comment is responding to a sentient Vizzy comment
                 # Read in sentient comments that have been depleted
-                # print("Checking Depleted")
                 depleted = getCommentsdepleted()
-                if parent.id not in depleted and '^(this response generated with openai)' in parent.body.lower():
+                if parent.id not in depleted and '^(this response generated with openai [davinci])' in parent.body.lower():
                     if self.check_sentience(redditObject,False,True):
                         residual_sentience = True
                     else:
                         residual_sentience = False
+                        if isComment(parent):
+                            print(parent.body)
 
 
                 # Limiter for residual sentience
                 else:
+                    if parent.id in depleted:
+                        print("Already commented.")
+                    else:
+                        print("Failed sentience string verification.")
+                        if isComment(parent):
+                            print(parent.body)
                     residual_sentience = False
             except:
 
                 # Something broke, fuck it dude
-                grandparent = None
                 residual_sentience = False
         else:
+            print(parent.author.name.lower())
+            if isComment(parent):
+                print(parent.body)
 
             # If he's not responding to a Vizzy comment, Vizzy better STFU
             residual_sentience = False
-            grandparent = None
 
-        return user_text, grandparent, residual_sentience
+        return user_text, residual_sentience
 
 
     """Get all the info we need about a post to respond to it"""
@@ -322,47 +330,43 @@ class VIZZY_T:
 
         user_text = redditObject.title.lower() + "\n" + redditObject.selftext.lower()
 
-        return user_text, None, False
+        return user_text, False
 
 
     """Splitting up between comments and posts, uses the above two functions"""
     def firstlook(self, redditObject):
-        # print(f"Processing {redditObject}")
-
         # Gather needed info if it's a comment
         if isComment(redditObject):
-            user_text, grandparent, residual_sentience = self.comment_processer(redditObject)
+            user_text, residual_sentience = self.comment_processer(redditObject)
 
         # Gather information if it's a comment
         else:
-            user_text, grandparent, residual_sentience = self.post_processer(redditObject)
+            user_text, residual_sentience = self.post_processer(redditObject)
         # Make sure there's nothing the bot will consider an extra line
         if f"{redditObject.author.name}: " in user_text:
             user_text = user_text.split(f"{redditObject.author.name}: ")[0]
 
         is_triggered = triggered(user_text)
 
-        return user_text, grandparent, residual_sentience, is_triggered
+        return user_text, residual_sentience, is_triggered
 
 
     """Primary Function"""
     def vizzytime(self, redditObject):
 
         skip = self.base_response_checks(redditObject)
+
         if skip:
+            print(f"Skipping https://www.reddit.com{redditObject.permalink}")
             return
 
         else:
-
-            # print(redditObject.subreddit)
-
-
-            user_text, grandparent, residual_sentience, triggered = self.firstlook(redditObject)
+            user_text, residual_sentience, triggered = self.firstlook(redditObject)
 
             if residual_sentience:
 
                 print(f"Processing residual sentience on https://www.reddit.com{redditObject.permalink}")
-                self.response_sentient_followup(redditObject, grandparent)
+                self.response_sentient(redditObject, residual=True)
 
             elif triggered:
                 '''
@@ -394,9 +398,8 @@ class VIZZY_T:
             try:
                 self.vizzytime(obj)
             except Exception as e:
-                body = "https://www.reddit.com"+obj.permalink + " - " + str(e)
-                self.send_errors(body, obj)
-            requests.get('https://hc-ping.com/9d4dd9b0-7d3d-4694-8704-aa207c346793')
+                body = f"Vizzy T Error Report:\n{e}"
+                self.send_errors(body,obj)
 
 
 # GODS BE GOOD

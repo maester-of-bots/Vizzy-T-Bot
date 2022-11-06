@@ -34,6 +34,9 @@ def start():
             else:
                 quote = getQuote()
 
+                if "{}" in quote:
+                    quote.replace("{}",tweet.user.screen_name)
+
                 print('https://twitter.com/twitter/statuses/'+str(tweet.id))
 
                 reply = api.update_status(status=quote, in_reply_to_status_id=tweet.id, auto_populate_reply_metadata=True)

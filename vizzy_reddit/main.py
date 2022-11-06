@@ -187,36 +187,42 @@ class VIZZY_T:
             # Make the response based on the comment and the model
             response, token_cost = get_sentient(redditObject, model)
 
-            # Cut down to six decimals about all that matters
-            dollar_cost = format(token_cost*per_token, '.6f')
-            print(f"Sentience Response: {response}")
-            self.sentience_log_add(redditObject.author.name,token_cost)
-            print("Logged user usage of sentience.")
+            if not response and not token_cost:
 
-            if f"{redditObject.author.name}: " in response:
-                response = response.split(f"{redditObject.author.name}: ")[0]
+                self.response_canon(redditObject)
+                self.send_webhook("Vizzy T defaulted to a standard response after generating a duplicate.", sentient)
+            else:
 
-            if "Vizzy T" in response or "vizzy t" in response or "vizzy_t_bot" in response or "Vizzy_T_Bot" in response:
-                response= response.lower().replace("vizzy t","")
+                # Cut down to six decimals about all that matters
+                dollar_cost = format(token_cost*per_token, '.6f')
+                print(f"Sentience Response: {response}")
+                self.sentience_log_add(redditObject.author.name,token_cost)
+                print("Logged user usage of sentience.")
 
-            cost_text = f"This action cost ${dollar_cost} to generate."
+                if f"{redditObject.author.name}: " in response:
+                    response = response.split(f"{redditObject.author.name}: ")[0]
 
-            body = f"Sentience invoked by {str(redditObject.author.name)} - {redditObject.author.name}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n${cost_text}\n"
+                if "Vizzy T" in response or "vizzy t" in response or "vizzy_t_bot" in response or "Vizzy_T_Bot" in response:
+                    response= response.lower().replace("vizzy t","")
 
-            if residual:
-                body = "Residual " + body
+                cost_text = f"This action cost ${dollar_cost} to generate."
 
-            # Reply to the comment
-            redditObject.reply(body=response)
+                body = f"Sentience invoked by {str(redditObject.author.name)} - {redditObject.author.name}\n{response}\nhttps://www.reddit.com{redditObject.permalink}\n${cost_text}\n"
 
-            # Upvote the comment
-            redditObject.upvote()
+                if residual:
+                    body = "Residual " + body
 
-            # Log the comment as commented on
-            writeComment(redditObject.id)
+                # Reply to the comment
+                redditObject.reply(body=response)
 
-            # Notify
-            self.send_webhook(body, sentient)
+                # Upvote the comment
+                redditObject.upvote()
+
+                # Log the comment as commented on
+                writeComment(redditObject.id)
+
+                # Notify
+                self.send_webhook(body, sentient)
 
         else:
 

@@ -121,10 +121,7 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
 
     print("Making sentience")
 
-    presence_penalty_base = .6
-
-    presence_penalty = presence_penalty_base + addition
-
+    presence_penalty = .8
     max_tokens = 750
 
     # Generate the raw response data
@@ -143,7 +140,11 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
 
     parsed += f"\n\n^(This response generated with OpenAI [{model.capitalize()}])"
 
-    # Get token cost, and round it to six places.
-    cost = data['usage']['total_tokens']
+    if str(comment.parent().body) == parsed:
+        return False, False
 
-    return parsed, cost
+    else:
+        # Get token cost, and round it to six places.
+        cost = data['usage']['total_tokens']
+
+        return parsed, cost

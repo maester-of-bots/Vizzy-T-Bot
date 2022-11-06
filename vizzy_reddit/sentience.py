@@ -15,7 +15,7 @@ openai.api_key = os.getenv('sentient')
 def makePrompt(comment):
 
     # Craft the initial base
-    base = f"""The following is a conversation with Viserys I Targaryen, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
+    base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
 Vizzy T speaks like an old, sick king.
 Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
 Vizzy T can have his kingsguard carry out his will whenever he needs something done.

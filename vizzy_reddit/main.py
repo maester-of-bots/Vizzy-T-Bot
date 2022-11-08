@@ -302,17 +302,12 @@ class VIZZY_T:
                         print("Already commented.")
                     else:
                         print("Failed sentience string verification.")
-                        if isComment(parent):
-                            print(parent.body)
                     residual_sentience = False
             except:
 
                 # Something broke, fuck it dude
                 residual_sentience = False
         else:
-            print(parent.author.name.lower())
-            if isComment(parent):
-                print(parent.body)
 
             # If he's not responding to a Vizzy comment, Vizzy better STFU
             residual_sentience = False
@@ -351,29 +346,43 @@ class VIZZY_T:
 
         parent = comment.parent()
 
-        user_text, residual_sentience = self.comment_processer(parent)
+        parent.refresh()
 
         in_db = parent.id in getComments()
 
-        is_triggered = triggered(user_text)
 
-        is_depleted = parent.id in getCommentsdwarf()
+        if in_db:
 
-        report = f"Comment by {parent.author.name}\n\nResidual Sentience: {str(residual_sentience)}\n\nComment ID in response database: {str(in_db)}\n\nComment ID in depleted database: {str(is_depleted)}\n\nTriggered? {str(is_triggered)}\n\n"
+            parent.replies.replace_more()
 
-        if not residual_sentience and not is_triggered:
-            note = "*This comment did not contain trigger words, and was not a reply to a comment with residual sentience.*"
-        elif residual_sentience and is_depleted and not is_triggered:
-            note = "*This comment did not contain trigger words.  It was a reply to a comment that had residual sentience, but it was used by another Redditor.*"
+            child_comments = parent.replies.list()
+            for comment in child_comments:
+                if comment.author.name.lower() == "vizzy_t_bot":
+                    url = f"https://www.reddit.com{comment.permalink}"
+                    reply = f"[It's right here, smartass.]({url})"
+                    comment.reply(body=reply)
+                    return
         else:
-            note = "*I am not sure why this comment was not processed, sorry.  Would you like to see the tapestries?*"
 
-        final = report + note
+            user_text, residual_sentience = self.comment_processer(parent)
 
-        print(final)
 
-        comment.reply(body=final)
+            is_triggered = triggered(user_text)
 
+            is_depleted = parent.id in getCommentsdwarf()
+
+            report = f"Comment by {parent.author.name}\n\nResidual Sentience: {str(residual_sentience)}\n\nComment ID in response database: {str(in_db)}\n\nComment ID in depleted database: {str(is_depleted)}\n\nTriggered? {str(is_triggered)}\n\n"
+
+            if not residual_sentience and not is_triggered:
+                note = "*This comment did not contain trigger words, and was not a reply to a comment with residual sentience.*"
+            elif residual_sentience and is_depleted and not is_triggered:
+                note = "*This comment did not contain trigger words.  It was a reply to a comment that had residual sentience, but it was used by another Redditor.*"
+            else:
+                note = "*I am not sure why this comment was not processed, sorry.  Would you like to see the tapestries?*"
+
+            final = report + note
+
+            comment.reply(body=final)
 
 
 

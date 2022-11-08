@@ -356,9 +356,9 @@ class VIZZY_T:
             parent.replies.replace_more()
 
             child_comments = parent.replies.list()
-            for comment in child_comments:
-                if comment.author.name.lower() == "vizzy_t_bot":
-                    url = f"https://www.reddit.com{comment.permalink}"
+            for child_comment in child_comments:
+                if child_comment.author.name.lower() == "vizzy_t_bot":
+                    url = f"https://www.reddit.com{child_comment.permalink}"
                     reply = f"[It's right here, smartass.]({url})"
                     comment.reply(body=reply)
                     return

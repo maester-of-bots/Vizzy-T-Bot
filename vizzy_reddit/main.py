@@ -419,11 +419,14 @@ class VIZZY_T:
 
     def run(self):
         for comment in self.subreddit.stream.comments():
-            try:
-                self.vizzytime(comment)
-            except Exception as e:
-                body = f"Vizzy T Error Report:\n{e}"
-                self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
+            if comment.body == "Why didn't you respond here, Vizzy?" and comment.author.name.lower() in ['SOBER-Lab','LSA-Lab']:
+                self.debug(comment)
+            else:
+                try:
+                    self.vizzytime(comment)
+                except Exception as e:
+                    body = f"Vizzy T Error Report:\n{e}"
+                    self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
 
 
 # GODS BE GOOD

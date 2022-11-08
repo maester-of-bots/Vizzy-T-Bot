@@ -419,7 +419,7 @@ class VIZZY_T:
 
     def run(self):
         for comment in self.subreddit.stream.comments():
-            if comment.body == "Why didn't you respond here, Vizzy?" and comment.author.name.lower() in ['SOBER-Lab','LSA-Lab']:
+            if comment.body == "Why didn't you respond here, Vizzy?" and comment.author.name in ['SOBER-Lab','LSA-Lab']:
                 self.debug(comment)
             else:
                 try:

@@ -370,7 +370,9 @@ class VIZZY_T:
 
         final = report + note
 
-        comment.reply(final)
+        print(final)
+
+        comment.reply(body=final)
 
 
 

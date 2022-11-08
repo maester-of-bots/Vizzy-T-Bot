@@ -35,7 +35,7 @@ def start():
                 quote = getQuote()
 
                 if "{}" in quote:
-                    quote.replace("{}",tweet.user.screen_name)
+                    quote = quote.replace("{}",tweet.user.screen_name)
 
                 print('https://twitter.com/twitter/statuses/'+str(tweet.id))
 

@@ -53,22 +53,12 @@ def tokenCalculator(comment, model):
 
 
 
-
-
-
 def get_sentient(comment, model):
 
     # Craft the initial base
-    base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-Vizzy T speaks like an old, sick king.
-Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
-Vizzy T can have his kingsguard carry out his will whenever he needs something done.
-Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra. 
-"""
+    base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T."""
 
-    if "stannis-mannis" in comment.author.name.lower():
-        base += f"Vizzy T treats {comment.author.name} with mutual respect but also suspicion, as {comment.author.name} could challenge his reign.\n"
-    else:
+    if not "bobby-b-bot" in comment.author.name.lower():
         base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court\n'
 
 
@@ -90,7 +80,7 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
         if f'{author}: ' not in stop:
             stop.append(f'{author}: ')
 
-        msg = current.body.replace('^(This response generated with OpenAI)','')
+        msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
 
         # Don't read past a comment that's 500 tokens or more
         tokens, costs = tokenCalculator(msg, model)
@@ -138,7 +128,7 @@ Vizzy T does not tolerate any form of disrespect to his daughter Rhaenyra.
     # Parse out the line we need
     parsed = response.replace('User', comment.author.name).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
 
-    parsed += f"\n\n^(This response generated with OpenAI [{model.capitalize()}])"
+    parsed += f"\n\n^(This response generated with OpenAI [DaVinci])"
 
     if str(comment.parent().body) == parsed:
         return False, False

@@ -229,17 +229,6 @@ class VIZZY_T:
             self.response_canon(redditObject)
 
 
-
-
-
-
-
-
-
-
-
-
-
     """Get the text of the object"""
     def getText(self,redditObject):
         if isComment(redditObject):
@@ -357,6 +346,35 @@ class VIZZY_T:
         return user_text, residual_sentience, is_triggered
 
 
+    def debug(self,comment):
+        '''This executes when Steve comments saying "Why didn't you respond here, Vizzy?"'''
+
+        parent = comment.parent()
+
+        user_text, residual_sentience = self.comment_processer(parent)
+
+        in_db = parent.id in getComments()
+
+        is_triggered = triggered(user_text)
+
+        is_depleted = parent.id in getCommentsdwarf()
+
+        report = f"Comment by {parent.author.name}\n\nResidual Sentience: {str(residual_sentience)}\n\nComment ID in response database: {str(in_db)}\n\nComment ID in depleted database: {str(is_depleted)}\n\nTriggered? {str(is_triggered)}\n\n"
+
+        if not residual_sentience and not is_triggered:
+            note = "*This comment did not contain trigger words, and was not a reply to a comment with residual sentience.*"
+        elif residual_sentience and is_depleted and not is_triggered:
+            note = "*This comment did not contain trigger words.  It was a reply to a comment that had residual sentience, but it was used by another Redditor.*"
+        else:
+            note = "*I am not sure why this comment was not processed, sorry.  Would you like to see the tapestries?*"
+
+        final = report + note
+
+        comment.reply(final)
+
+
+
+
     """Primary Function"""
     def vizzytime(self, redditObject):
 
@@ -400,12 +418,12 @@ class VIZZY_T:
                 self.response_sentient(redditObject)
 
     def run(self):
-        for obj in self.stream:
+        for comment in self.subreddit.stream.comments():
             try:
-                self.vizzytime(obj)
+                self.vizzytime(comment)
             except Exception as e:
                 body = f"Vizzy T Error Report:\n{e}"
-                self.send_errors(body,obj)
+                self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
 
 
 # GODS BE GOOD

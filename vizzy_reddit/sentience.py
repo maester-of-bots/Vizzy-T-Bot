@@ -145,3 +145,33 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
         cost = data['usage']['total_tokens']
 
         return parsed, cost
+
+
+def whore():
+    # Craft the initial base
+    base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
+    Vizzy T speaks like an old, sick king.
+    Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
+    Vizzy T will have his kingsguard carry out his will whenever he needs something done.
+    Vizzy T does not tolerate any form of disrespect or rudeness. 
+    Vizzy T recognizes bobby-b-bot as King Robert Baratheon
+    bobby-b-bot:  THE WHORE IS PREGNANT!
+    Vizzy T: 
+    """
+
+    data = openai.Completion.create(engine='text-davinci-002',
+                                    prompt=base,
+                                    max_tokens=2000,
+                                    presence_penalty=1,
+                                    temperature=.9,
+                                    stop=['bobby-b-bot: ','Vizzy T: '])
+
+    # Grab the response out of the data dict
+    response = data['choices'][0]['text']
+
+    # Parse out the line we need
+    parsed = response.replace('User', "Bobby  B").strip().replace("Vizzy T:", "").replace("vizzy t:","").strip()
+
+    parsed += f"\n\n^(This response generated with OpenAI [DaVinci])"
+
+    return parsed

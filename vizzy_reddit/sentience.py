@@ -53,7 +53,7 @@ def tokenCalculator(comment, model):
 
 
 
-def get_sentient(comment, model):
+def get_sentient(comment):
 
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
@@ -90,7 +90,7 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
         msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
 
         # Don't read past a comment that's 500 tokens or more
-        tokens, costs = tokenCalculator(msg, model)
+        tokens, costs = tokenCalculator(msg, )
 
         if tokens > 500 or total_count > 1000:
             reading = False
@@ -105,7 +105,10 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
         if levels == 4:
             reading = False
         else:
-            current = current.parent()
+            try:
+                current = current.parent()
+            except:
+                reading = False
 
     addition = .1 * len(entries)
 
@@ -119,10 +122,10 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
     print("Making sentience")
 
     presence_penalty = .8
-    max_tokens = 750
+    max_tokens = 1750
 
     # Generate the raw response data
-    data = openai.Completion.create(engine=openai_models[model]['name'],
+    data = openai.Completion.create(engine='text-davinci-002',
                                     prompt=base,
                                     max_tokens=max_tokens,
                                     presence_penalty=presence_penalty,
@@ -134,8 +137,6 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
 
     # Parse out the line we need
     parsed = response.replace('User', comment.author.name).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
-
-    parsed += f"\n\n^(This response generated with OpenAI [DaVinci])"
 
     if str(comment.parent().body) == parsed:
         return False, False

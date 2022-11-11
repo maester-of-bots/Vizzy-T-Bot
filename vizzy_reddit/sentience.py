@@ -71,7 +71,7 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
     levels = 0
     entries = []
 
-    total_count = 0
+    # total_count = 0
 
     stop = []
 
@@ -87,12 +87,12 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
         msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
 
         # Don't read past a comment that's 500 tokens or more
-        tokens, costs = tokenCalculator(msg, )
+        # tokens, costs = tokenCalculator(msg )
 
-        if tokens > 500 or total_count > 1000:
-            reading = False
-        else:
-            total_count += tokens
+        # if tokens > 500 or total_count > 1000:
+        #    reading = False
+        # else:
+        #    total_count += tokens
 
         entry = f"{str(author)}: {msg}\n"
         entries.append(entry)
@@ -107,7 +107,7 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
             except:
                 reading = False
 
-    addition = .1 * len(entries)
+    # addition = .1 * len(entries)
 
     entries.reverse()
 

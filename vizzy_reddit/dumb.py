@@ -100,7 +100,7 @@ class VIZZY_T:
     """Sending a normal, random response"""
     def response_canon(self,comment):
         ts = datetime.now(self.tz)
-        if ts.hour == 23 and ts.minute > 30:
+        if ts.hour == 23 and ts.minute > 55:
             response, cost = get_sentient(comment)
             comment.reply(body=response)
             # comment.upvote()
@@ -282,7 +282,7 @@ class VIZZY_T:
                     self.vizzytime(comment)
                 except Exception as e:
                     body = f"Vizzy T Error Report:\n{e}"
-                    self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
+                    # self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
 
 
 # GODS BE GOOD

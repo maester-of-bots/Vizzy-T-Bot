@@ -100,7 +100,7 @@ class VIZZY_T:
     """Sending a normal, random response"""
     def response_canon(self,comment):
         ts = datetime.now(self.tz)
-        if ts.hour == 23 and ts.minute > 55:
+        if ts.hour == 23 and ts.minute > 55 and isComment(comment):
             response, cost = get_sentient(comment)
             comment.reply(body=response)
             # comment.upvote()

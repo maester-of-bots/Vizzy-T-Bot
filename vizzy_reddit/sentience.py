@@ -57,14 +57,11 @@ def get_sentient(comment):
 
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-Vizzy T speaks like an old, sick king.
-Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
-Vizzy T will have his kingsguard carry out his will whenever he needs something done.
-Vizzy T does not tolerate any form of disrespect or rudeness. 
+Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
 """
 
     if not "bobby-b-bot" in comment.author.name.lower():
-        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court\n'
+        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court, and commands respect from them.\n'
     else:
         base += "Vizzy T recognizes bobby-b-bot as King Robert Baratheon, a future King of Westeros."
 
@@ -151,10 +148,8 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
 def whore():
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-    Vizzy T speaks like an old, sick king.
-    Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
-    Vizzy T will have his kingsguard carry out his will whenever he needs something done.
-    Vizzy T does not tolerate any form of disrespect or rudeness. 
+    Vizzy T speaks like an old.
+    Vizzy T does not tolerate any form of disrespect towrads his daughter. 
     Vizzy T recognizes bobby-b-bot as King Robert Baratheon
     bobby-b-bot:  THE WHORE IS PREGNANT!
     Vizzy T: 

@@ -400,32 +400,33 @@ class VIZZY_T:
 
             try:
 
-                if redditObject.author.name.lower() == 'limacy':
-                    self.response_sentient(redditObject)
 
-                elif residual_sentience:
+                if residual_sentience:
 
                     print(f"Processing residual sentience on https://www.reddit.com{redditObject.permalink}")
                     self.response_sentient(redditObject, residual=True)
 
                 elif triggered:
-                    '''
-                    If there's a normal Vizzy T trigger on a non-sentient post
-                    
-                    He'll evaluate sentience and then make a normal response or a sentient response.
-                    '''
-                    print(f"Triggered, on https://www.reddit.com{redditObject.permalink}, no residual sentience though.")
-
-                    word_count = len(user_text.replace('vizzy t', '').split(' '))
-
-                    if self.check_sentience(redditObject, depth=True, log=True) and word_count > 2:
-
-                        # Send a sentient response
+                    if redditObject.author.name.lower() == 'limacy':
                         self.response_sentient(redditObject)
                     else:
+                        '''
+                        If there's a normal Vizzy T trigger on a non-sentient post
+                        
+                        He'll evaluate sentience and then make a normal response or a sentient response.
+                        '''
+                        print(f"Triggered, on https://www.reddit.com{redditObject.permalink}, no residual sentience though.")
 
-                        # Send a canon response
-                        self.response_canon(redditObject)
+                        word_count = len(user_text.replace('vizzy t', '').split(' '))
+
+                        if self.check_sentience(redditObject, depth=True, log=True) and word_count > 2:
+
+                            # Send a sentient response
+                            self.response_sentient(redditObject)
+                        else:
+
+                            # Send a canon response
+                            self.response_canon(redditObject)
 
                 # Get triggered by just that phrase, mostly used so Vizzy can talk to Bobby.  Was requested.
                 elif "the whore is pregnant!" in user_text:

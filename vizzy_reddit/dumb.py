@@ -258,13 +258,19 @@ class VIZZY_T:
             user_text, triggered = self.firstlook(redditObject)
 
             if triggered:
-                '''
-                If there's a normal Vizzy T trigger on a non-sentient post
-                
-                He'll evaluate sentience and then make a normal response or a sentient response.
-                '''
-                print(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
-                self.response_canon(redditObject)
+                if str(redditObject.author.name.lower()) in ['apostastrophe','limacy']:
+                    r,c = get_sentient(redditObject)
+                    redditObject.reply(body=r)
+                    writeComment(redditObject.id)
+                    self.send_webhook(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+                else:
+                    '''
+                    If there's a normal Vizzy T trigger on a non-sentient post
+                    
+                    He'll evaluate sentience and then make a normal response or a sentient response.
+                    '''
+                    print(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+                    self.response_canon(redditObject)
 
             # Get triggered by just that phrase, mostly used so Vizzy can talk to Bobby.  Was requested.
             elif "the whore is pregnant!" in user_text:

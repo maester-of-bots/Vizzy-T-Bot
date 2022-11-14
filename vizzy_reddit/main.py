@@ -407,7 +407,7 @@ class VIZZY_T:
                     self.response_sentient(redditObject, residual=True)
 
                 elif triggered:
-                    if redditObject.author.name.lower() == 'limacy':
+                    if redditObject.author.name.lower() in ['apostastrophe','limacy']:
                         self.response_sentient(redditObject)
                     else:
                         '''

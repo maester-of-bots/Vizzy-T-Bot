@@ -258,7 +258,7 @@ class VIZZY_T:
             user_text, triggered = self.firstlook(redditObject)
 
             if triggered:
-                if str(redditObject.author.name.lower()) in ['apostastrophe','limacy']:
+                if str(redditObject.author.name.lower()) in ['apostastrophe','limacy','invertiguy']:
                     r,c = get_sentient(redditObject)
                     redditObject.reply(body=r)
                     writeComment(redditObject.id)

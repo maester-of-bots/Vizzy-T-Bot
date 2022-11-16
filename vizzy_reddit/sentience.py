@@ -88,7 +88,10 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
             if f'{author}: ' not in stop:
                 stop.append(f'{author}: ')
 
-            msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
+            try:
+                msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
+            except:
+                reading = False
 
             # Don't read past a comment that's 500 tokens or more
             # tokens, costs = tokenCalculator(msg )
@@ -165,8 +168,8 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
 def whore():
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-    Vizzy T speaks like an old.
-    Vizzy T does not tolerate any form of disrespect towrads his daughter. 
+    Vizzy T speaks like an old king.
+    Vizzy T does not tolerate any form of disrespect towards his daughter. 
     Vizzy T recognizes bobby-b-bot as King Robert Baratheon
     bobby-b-bot:  THE WHORE IS PREGNANT!
     Vizzy T: 

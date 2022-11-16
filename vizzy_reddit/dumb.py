@@ -57,7 +57,7 @@ class VIZZY_T:
                 dwarf_comment = user['reddit'].comment(id=comment.id)
                 dwarf_comment.reply(body=res)
                 writeComment(comment.id)
-                body += "\nLord Tyrion has apologized for the crown.""""
+                body += "\nLord Tyrion has apologized for the crown."""
 
 
         data = {'content': body, 'username': 'BOFH'}

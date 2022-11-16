@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 import openai
-
+import praw
 
 load_dotenv()
 openai.api_key = os.getenv('sentient_v')
@@ -30,6 +30,9 @@ openai_models = {
         "name": 'text-davinci-002'
     },
 }
+
+def isComment(obj):
+    return isinstance(obj,praw.models.Comment)
 
 
 def tokenCalculator(comment, model):
@@ -105,6 +108,10 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
             else:
                 try:
                     current = current.parent()
+                    if isComment(current):
+                        continue
+                    else:
+                        reading = False
                 except:
                     reading = False
         except:

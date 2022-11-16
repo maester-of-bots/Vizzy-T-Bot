@@ -42,8 +42,8 @@ class VIZZY_T:
         self.stream = praw.models.util.stream_generator(lambda **kwargs: submissions_and_comments(self.subreddit, **kwargs))
 
 
-    def send_errors(self, body, comment):
-        """Use webhooks to notify admin on Discord"""
+    def send_errors(self, body, comment=None):
+        """Use webhooks to notify admin on Discord
 
         if "NoneType' object has no attribute 'name" in str(body):
             pass
@@ -57,11 +57,11 @@ class VIZZY_T:
                 dwarf_comment = user['reddit'].comment(id=comment.id)
                 dwarf_comment.reply(body=res)
                 writeComment(comment.id)
-                body += "\nLord Tyrion has apologized for the crown."
+                body += "\nLord Tyrion has apologized for the crown.""""
 
 
-            data = {'content': body, 'username': 'BOFH'}
-            requests.post(self.webhook_bofh, data=data)
+        data = {'content': body, 'username': 'BOFH'}
+        requests.post(self.webhook_bofh, data=data)
 
 
 

@@ -77,35 +77,38 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
 
 
     while reading:
-        author = current.author.name.lower()
-        if author == 'vizzy_t_bot':
-            author = "Vizzy T"
+        try:
+            author = current.author.name.lower()
+            if author == 'vizzy_t_bot':
+                author = "Vizzy T"
 
-        if f'{author}: ' not in stop:
-            stop.append(f'{author}: ')
+            if f'{author}: ' not in stop:
+                stop.append(f'{author}: ')
 
-        msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
+            msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
 
-        # Don't read past a comment that's 500 tokens or more
-        # tokens, costs = tokenCalculator(msg )
+            # Don't read past a comment that's 500 tokens or more
+            # tokens, costs = tokenCalculator(msg )
 
-        # if tokens > 500 or total_count > 1000:
-        #    reading = False
-        # else:
-        #    total_count += tokens
+            # if tokens > 500 or total_count > 1000:
+            #    reading = False
+            # else:
+            #    total_count += tokens
 
-        entry = f"{str(author)}: {msg}\n"
-        entries.append(entry)
+            entry = f"{str(author)}: {msg}\n"
+            entries.append(entry)
 
-        levels += 1
+            levels += 1
 
-        if levels == 4:
-            reading = False
-        else:
-            try:
-                current = current.parent()
-            except:
+            if levels == 4:
                 reading = False
+            else:
+                try:
+                    current = current.parent()
+                except:
+                    reading = False
+        except:
+            reading = False
 
     # addition = .1 * len(entries)
 

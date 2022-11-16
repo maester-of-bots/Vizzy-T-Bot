@@ -145,14 +145,21 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
     # Parse out the line we need
     parsed = response.replace('User', comment.author.name).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
 
-    if str(comment.parent().body) == parsed:
-        return False, False
+    try:
+        if str(comment.parent().body) == parsed:
+            return False, False
+        else:
+            # Get token cost, and round it to six places.
+            cost = data['usage']['total_tokens']
 
-    else:
+            return parsed, cost
+    except:
+        print("Ugh")
         # Get token cost, and round it to six places.
         cost = data['usage']['total_tokens']
 
         return parsed, cost
+
 
 
 def whore():

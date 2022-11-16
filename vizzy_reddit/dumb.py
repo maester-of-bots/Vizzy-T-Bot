@@ -124,8 +124,8 @@ class VIZZY_T:
                 self.send_webhook(link, False)
 
             except Exception as e:
-                body = "https://www.reddit.com"+comment.permalink + " - " + str(e)
-                self.send_errors(body, comment)
+                #body = "https://www.reddit.com"+comment.permalink + " - " + str(e)
+                self.send_errors(e)
 
 
 
@@ -288,7 +288,7 @@ class VIZZY_T:
                     self.vizzytime(comment)
                 except Exception as e:
                     body = f"Vizzy T Error Report:\n{e}"
-                    self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
+                    self.send_errors(body,)
 
 
 # GODS BE GOOD

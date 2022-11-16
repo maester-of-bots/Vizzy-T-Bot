@@ -288,7 +288,7 @@ class VIZZY_T:
                     self.vizzytime(comment)
                 except Exception as e:
                     body = f"Vizzy T Error Report:\n{e}"
-                    # self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
+                    self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
 
 
 # GODS BE GOOD

@@ -26,7 +26,7 @@ class VIZZY_T:
         self.webhook_babysitter = os.getenv('webhook_babysitter')
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolksimulator+freefolk+HouseOfTheDragon+BSFT')
+        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolksimulator+freefolk+HouseOfTheDragon+BSFT+SoapBoxBeers+biscuit_meltdown+shitboxbeers')
         # self.subreddit = self.reddit.subreddit('freefolksimulator_TST')
 
         # Pull in quotes from quotes.py

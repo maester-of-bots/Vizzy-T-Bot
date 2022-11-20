@@ -398,35 +398,43 @@ class VIZZY_T:
         else:
             user_text, residual_sentience, triggered = self.firstlook(redditObject)
 
-            if residual_sentience:
+            try:
 
-                print(f"Processing residual sentience on https://www.reddit.com{redditObject.permalink}")
-                self.response_sentient(redditObject, residual=True)
 
-            elif triggered:
-                '''
-                If there's a normal Vizzy T trigger on a non-sentient post
-                
-                He'll evaluate sentience and then make a normal response or a sentient response.
-                '''
-                print(f"Triggered, on https://www.reddit.com{redditObject.permalink}, no residual sentience though.")
+                if residual_sentience:
 
-                word_count = len(user_text.replace('vizzy t', '').split(' '))
+                    print(f"Processing residual sentience on https://www.reddit.com{redditObject.permalink}")
+                    self.response_sentient(redditObject, residual=True)
 
-                if self.check_sentience(redditObject, depth=True, log=True) and word_count > 2:
+                elif triggered:
+                    if str(redditObject.author.name.lower()) in ['apostastrophe','limacy']:
+                        self.response_sentient(redditObject)
+                    else:
+                        '''
+                        If there's a normal Vizzy T trigger on a non-sentient post
+                        
+                        He'll evaluate sentience and then make a normal response or a sentient response.
+                        '''
+                        print(f"Triggered, on https://www.reddit.com{redditObject.permalink}, no residual sentience though.")
 
-                    # Send a sentient response
+                        word_count = len(user_text.replace('vizzy t', '').split(' '))
+
+                        if self.check_sentience(redditObject, depth=True, log=True) and word_count > 2:
+
+                            # Send a sentient response
+                            self.response_sentient(redditObject)
+                        else:
+
+                            # Send a canon response
+                            self.response_canon(redditObject)
+
+                # Get triggered by just that phrase, mostly used so Vizzy can talk to Bobby.  Was requested.
+                elif "the whore is pregnant!" in user_text:
+
+                    # Yell at Bobby B.
                     self.response_sentient(redditObject)
-                else:
-
-                    # Send a canon response
-                    self.response_canon(redditObject)
-
-            # Get triggered by just that phrase, mostly used so Vizzy can talk to Bobby.  Was requested.
-            elif "the whore is pregnant!" in user_text:
-
-                # Yell at Bobby B.
-                self.response_sentient(redditObject)
+            except:
+                pass
 
     def run(self):
         for comment in self.subreddit.stream.comments():
@@ -436,8 +444,9 @@ class VIZZY_T:
                 try:
                     self.vizzytime(comment)
                 except Exception as e:
-                    body = f"Vizzy T Error Report:\n{e}"
-                    self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
+                    pass
+                    # body = f"Vizzy T Error Report:\n{e}"
+                    # self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
 
 
 # GODS BE GOOD

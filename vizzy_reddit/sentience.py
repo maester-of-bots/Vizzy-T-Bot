@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 import openai
-
+import praw
 
 load_dotenv()
 openai.api_key = os.getenv('sentient_v')
@@ -31,6 +31,9 @@ openai_models = {
     },
 }
 
+def isComment(obj):
+    return isinstance(obj,praw.models.Comment)
+
 
 def tokenCalculator(comment, model):
     """ Return the amount of tokens this comment would represent"""
@@ -53,18 +56,15 @@ def tokenCalculator(comment, model):
 
 
 
-def get_sentient(comment, model):
+def get_sentient(comment):
 
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-Vizzy T speaks like an old, sick king.
-Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
-Vizzy T will have his kingsguard carry out his will whenever he needs something done.
-Vizzy T does not tolerate any form of disrespect or rudeness. 
+Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
 """
 
     if not "bobby-b-bot" in comment.author.name.lower():
-        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court\n'
+        base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court, and commands respect from them.\n'
     else:
         base += "Vizzy T recognizes bobby-b-bot as King Robert Baratheon, a future King of Westeros."
 
@@ -74,40 +74,53 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
     levels = 0
     entries = []
 
-    total_count = 0
+    # total_count = 0
 
     stop = []
 
 
     while reading:
-        author = current.author.name.lower()
-        if author == 'vizzy_t_bot':
-            author = "Vizzy T"
+        try:
+            author = current.author.name.lower()
+            if author == 'vizzy_t_bot':
+                author = "Vizzy T"
 
-        if f'{author}: ' not in stop:
-            stop.append(f'{author}: ')
+            if f'{author}: ' not in stop:
+                stop.append(f'{author}: ')
 
-        msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
+            try:
+                msg = current.body.replace('^(This response generated with OpenAI) [DaVinci]','')
+            except:
+                reading = False
 
-        # Don't read past a comment that's 500 tokens or more
-        tokens, costs = tokenCalculator(msg, model)
+            # Don't read past a comment that's 500 tokens or more
+            # tokens, costs = tokenCalculator(msg )
 
-        if tokens > 500 or total_count > 1000:
+            # if tokens > 500 or total_count > 1000:
+            #    reading = False
+            # else:
+            #    total_count += tokens
+
+            entry = f"{str(author)}: {msg}\n"
+            entries.append(entry)
+
+            levels += 1
+
+            if levels == 4:
+                reading = False
+            else:
+                try:
+                    current = current.parent()
+                    if isComment(current):
+                        continue
+                    else:
+                        reading = False
+                except:
+                    reading = False
+        except:
             reading = False
-        else:
-            total_count += tokens
 
-        entry = f"{str(author)}: {msg}\n"
-        entries.append(entry)
-
-        levels += 1
-
-        if levels == 4:
-            reading = False
-        else:
-            current = current.parent()
-
-    addition = .1 * len(entries)
+    # addition = .1 * len(entries)
 
     entries.reverse()
 
@@ -119,10 +132,10 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
     print("Making sentience")
 
     presence_penalty = .8
-    max_tokens = 750
+    max_tokens = 1750
 
     # Generate the raw response data
-    data = openai.Completion.create(engine=openai_models[model]['name'],
+    data = openai.Completion.create(engine='text-davinci-002',
                                     prompt=base,
                                     max_tokens=max_tokens,
                                     presence_penalty=presence_penalty,
@@ -135,25 +148,28 @@ Vizzy T does not tolerate any form of disrespect or rudeness.
     # Parse out the line we need
     parsed = response.replace('User', comment.author.name).strip().replace("Vizzy T:","").replace("vizzy t:","").strip()
 
-    parsed += f"\n\n^(This response generated with OpenAI [DaVinci])"
+    try:
+        if str(comment.parent().body) == parsed:
+            return False, False
+        else:
+            # Get token cost, and round it to six places.
+            cost = data['usage']['total_tokens']
 
-    if str(comment.parent().body) == parsed:
-        return False, False
-
-    else:
+            return parsed, cost
+    except:
+        print("Ugh")
         # Get token cost, and round it to six places.
         cost = data['usage']['total_tokens']
 
         return parsed, cost
 
 
+
 def whore():
     # Craft the initial base
     base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-    Vizzy T speaks like an old, sick king.
-    Vizzy T is very familiar with the world of HBO's House of the Dragon / Game of Thrones, and their characters.
-    Vizzy T will have his kingsguard carry out his will whenever he needs something done.
-    Vizzy T does not tolerate any form of disrespect or rudeness. 
+    Vizzy T speaks like an old king.
+    Vizzy T does not tolerate any form of disrespect towards his daughter. 
     Vizzy T recognizes bobby-b-bot as King Robert Baratheon
     bobby-b-bot:  THE WHORE IS PREGNANT!
     Vizzy T: 

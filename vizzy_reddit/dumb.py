@@ -3,6 +3,9 @@ import requests
 
 from utils import *
 
+from datetime import *
+import pytz
+
 
 class VIZZY_T:
     def __init__(self):
@@ -32,13 +35,15 @@ class VIZZY_T:
         # Pull in quotes from quotes.py
         self.quotes = quotes
 
+        self.tz = pytz.timezone('US/Eastern')
+
 
         # Set the subreddit stream to comments and posts
         self.stream = praw.models.util.stream_generator(lambda **kwargs: submissions_and_comments(self.subreddit, **kwargs))
 
 
-    def send_errors(self, body, comment):
-        """Use webhooks to notify admin on Discord"""
+    def send_errors(self, body, comment=None):
+        """Use webhooks to notify admin on Discord
 
         if "NoneType' object has no attribute 'name" in str(body):
             pass
@@ -52,11 +57,11 @@ class VIZZY_T:
                 dwarf_comment = user['reddit'].comment(id=comment.id)
                 dwarf_comment.reply(body=res)
                 writeComment(comment.id)
-                body += "\nLord Tyrion has apologized for the crown."
+                body += "\nLord Tyrion has apologized for the crown."""
 
 
-            data = {'content': body, 'username': 'BOFH'}
-            requests.post(self.webhook_bofh, data=data)
+        data = {'content': body, 'username': 'BOFH'}
+        requests.post(self.webhook_bofh, data=data)
 
 
 
@@ -94,22 +99,33 @@ class VIZZY_T:
 
     """Sending a normal, random response"""
     def response_canon(self,comment):
-        try:
-            seed()
-            num = randint(0, len(quotes) - 1)
-            response = quotes[num]
-            if "{}" in response:
-                response = response.format(comment.author.name)
-
+        ts = datetime.now(self.tz)
+        if ((ts.hour == 23 and ts.minute > 30) or (ts.hour == 0 and ts.minute < 30)) and isComment(comment):
+            response, cost = get_sentient(comment)
             comment.reply(body=response)
             # comment.upvote()
             writeComment(comment.id)
             link = f"\n{comment.author.name}: {self.getText(comment)}\nResponse: **'{response}'** \nLink - https://www.reddit.com{comment.permalink}"
             self.send_webhook(link, False)
 
-        except Exception as e:
-            body = "https://www.reddit.com"+comment.permalink + " - " + str(e)
-            self.send_errors(body, comment)
+        else:
+
+            try:
+                seed()
+                num = randint(0, len(quotes) - 1)
+                response = quotes[num]
+                if "{}" in response:
+                    response = response.format(comment.author.name)
+
+                comment.reply(body=response)
+                # comment.upvote()
+                writeComment(comment.id)
+                link = f"\n{comment.author.name}: {self.getText(comment)}\nResponse: **'{response}'** \nLink - https://www.reddit.com{comment.permalink}"
+                self.send_webhook(link, False)
+
+            except Exception as e:
+                #body = "https://www.reddit.com"+comment.permalink + " - " + str(e)
+                self.send_errors(e)
 
 
 
@@ -242,13 +258,19 @@ class VIZZY_T:
             user_text, triggered = self.firstlook(redditObject)
 
             if triggered:
-                '''
-                If there's a normal Vizzy T trigger on a non-sentient post
-                
-                He'll evaluate sentience and then make a normal response or a sentient response.
-                '''
-                print(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
-                self.response_canon(redditObject)
+                if str(redditObject.author.name.lower()) in ['apostastrophe','limacy','invertiguy','adelledewitt']:
+                    r,c = get_sentient(redditObject)
+                    redditObject.reply(body=r)
+                    writeComment(redditObject.id)
+                    self.send_webhook(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+                else:
+                    '''
+                    If there's a normal Vizzy T trigger on a non-sentient post
+                    
+                    He'll evaluate sentience and then make a normal response or a sentient response.
+                    '''
+                    print(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+                    self.response_canon(redditObject)
 
             # Get triggered by just that phrase, mostly used so Vizzy can talk to Bobby.  Was requested.
             elif "the whore is pregnant!" in user_text:
@@ -266,7 +288,7 @@ class VIZZY_T:
                     self.vizzytime(comment)
                 except Exception as e:
                     body = f"Vizzy T Error Report:\n{e}"
-                    self.send_errors(body,f"https://www.reddit.com{comment.permalink}")
+                    self.send_errors(body,)
 
 
 # GODS BE GOOD

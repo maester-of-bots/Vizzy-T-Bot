@@ -263,6 +263,12 @@ class VIZZY_T:
                     redditObject.reply(body=r)
                     writeComment(redditObject.id)
                     self.send_webhook(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+                elif str(redditObject.author.name.lower()) == "sober-lab":
+                    r,c = get_sentient(redditObject)
+                    redditObject.reply(body=r)
+                    writeComment(redditObject.id)
+                    self.send_webhook(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+
                 else:
                     '''
                     If there's a normal Vizzy T trigger on a non-sentient post

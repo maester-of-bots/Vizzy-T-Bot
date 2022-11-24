@@ -5,7 +5,29 @@ from utils import *
 
 from datetime import *
 import pytz
+import discord
 
+from discord import SyncWebhook
+
+
+
+
+def craft_embed(title, user_comment, webhook, url, thumbnail, response, color=0x00ff00):
+
+
+    e = discord.Embed(title=title, description=user_comment,
+                      url=url,
+                      color=color)
+
+    e = e.add_field(name="Response:", value=response, inline=True)
+
+    e = e.set_thumbnail(url=thumbnail)
+
+    webhook = SyncWebhook.from_url(webhook)
+
+    webhook.send(embed=e)
+
+    return e
 
 class VIZZY_T:
     def __init__(self):
@@ -25,11 +47,17 @@ class VIZZY_T:
             username=os.getenv('vizzy_username')
         )
         self.webhook_bofh = os.getenv('webhook_bofh')
+        self.webhook_canon = os.getenv('canon_vizzy')
+        self.webhook_sentient = os.getenv('sentient_vizzy')
+
+        self.sentience_whitelist = ['apostastrophe','limacy','invertiguy','adelledewitt']
+
+
 
         self.webhook_babysitter = os.getenv('webhook_babysitter')
 
         # Set the subreddit to monitor
-        self.subreddit = self.reddit.subreddit('vizzy_t_test+freefolksimulator+freefolk+HouseOfTheDragon+BSFT+SoapBoxBeers+biscuit_meltdown+shitboxbeers')
+        self.subreddit = self.reddit.subreddit('vizzy_t_test')#+freefolksimulator+freefolk+HouseOfTheDragon+BSFT+SoapBoxBeers+biscuit_meltdown+shitboxbeers')
         # self.subreddit = self.reddit.subreddit('freefolksimulator_TST')
 
         # Pull in quotes from quotes.py
@@ -87,6 +115,8 @@ class VIZZY_T:
             return True
 
     def send_webhook(self, body, sentient=False):
+        # self.webhook_sentient
+
         if sentient:
             url = self.webhook_sentient
             data = {'content': body, 'username': 'Sentient Vizzy T'}
@@ -105,8 +135,14 @@ class VIZZY_T:
             comment.reply(body=response)
             # comment.upvote()
             writeComment(comment.id)
-            link = f"\n{comment.author.name}: {self.getText(comment)}\nResponse: **'{response}'** \nLink - https://www.reddit.com{comment.permalink}"
-            self.send_webhook(link, False)
+
+            user_comment = f"{comment.author.name}: {self.getText(comment)}"
+            webhook =self.webhook_sentient
+            url = f'https://www.reddit.com{comment.permalink}'
+            thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+
+            craft_embed("Vizzy T", user_comment, webhook, url, thumbnail, response, color=0x00ff00)
+
 
         else:
 
@@ -120,8 +156,14 @@ class VIZZY_T:
                 comment.reply(body=response)
                 # comment.upvote()
                 writeComment(comment.id)
-                link = f"\n{comment.author.name}: {self.getText(comment)}\nResponse: **'{response}'** \nLink - https://www.reddit.com{comment.permalink}"
-                self.send_webhook(link, False)
+
+                user_comment = f"{comment.author.name}: {self.getText(comment)}"
+                webhook = self.webhook_canon
+                url = f'https://www.reddit.com{comment.permalink}'
+                thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+
+                craft_embed("Vizzy T", user_comment, webhook, url, thumbnail, response, color=0x00ff00)
+
 
             except Exception as e:
                 #body = "https://www.reddit.com"+comment.permalink + " - " + str(e)
@@ -258,16 +300,29 @@ class VIZZY_T:
             user_text, triggered = self.firstlook(redditObject)
 
             if triggered:
-                if str(redditObject.author.name.lower()) in ['apostastrophe','limacy','invertiguy','adelledewitt']:
+                if str(redditObject.author.name.lower()) in self.sentience_whitelist:
                     r,c = get_sentient(redditObject)
                     redditObject.reply(body=r)
                     writeComment(redditObject.id)
-                    self.send_webhook(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+
+                    user_comment = f"{redditObject.author.name}: {self.getText(redditObject)}"
+                    webhook = self.webhook_sentient
+                    url = f'https://www.reddit.com{redditObject.permalink}'
+                    thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+
+                    craft_embed("Sentient Vizzy T", user_comment, webhook, url, thumbnail, r, color=0x00ff00)
+
                 elif str(redditObject.author.name.lower()) == "sober-lab":
                     r,c = get_sentient(redditObject)
                     redditObject.reply(body=r)
                     writeComment(redditObject.id)
-                    self.send_webhook(f"Triggered, on https://www.reddit.com{redditObject.permalink}")
+
+                    user_comment = f"{redditObject.author.name}: {self.getText(redditObject)}"
+                    webhook = self.webhook_sentient
+                    url = f'https://www.reddit.com{redditObject.permalink}'
+                    thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+
+                    craft_embed("Sentient Vizzy T", user_comment, webhook, url, thumbnail, r, color=0x00ff00)
 
                 else:
                     '''

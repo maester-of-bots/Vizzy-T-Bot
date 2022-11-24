@@ -7,6 +7,9 @@ from quotes import quotes
 from utils import *
 import random
 
+import discord
+
+from discord import SyncWebhook
 
 def getQuote():
     random.seed()
@@ -14,6 +17,24 @@ def getQuote():
     quote = quotes[x]
     return quote
 
+
+
+def craft_embed(title, user_comment, webhook, url, thumbnail, response, color=0x00ff00):
+
+
+    e = discord.Embed(title=title, description=user_comment,
+                      url=url,
+                      color=color)
+
+    e = e.add_field(name="Response:", value=response, inline=True)
+
+    e = e.set_thumbnail(url=thumbnail)
+
+    webhook = SyncWebhook.from_url(webhook)
+
+    webhook.send(embed=e)
+
+    return e
 
 def send_webhook(url, body):
     """Use webhooks to notify admin on Discord"""
@@ -37,13 +58,13 @@ def start():
                 if "{}" in quote:
                     quote = quote.replace("{}",tweet.user.screen_name)
 
-                print('https://twitter.com/twitter/statuses/'+str(tweet.id))
+                tweet_url = 'https://twitter.com/twitter/statuses/'+str(tweet.id)
 
                 reply = api.update_status(status=quote, in_reply_to_status_id=tweet.id, auto_populate_reply_metadata=True)
 
                 reply_url = 'https://twitter.com/twitter/statuses/'+str(reply.id)
 
-                send_webhook(url, reply_url)
+                craft_embed('Vizzy T Twitter Bot', f"{reply_url}\n{tweet.text}", url, tweet_url, 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg', quote)
 
                 writeComment(tweet.id)
 

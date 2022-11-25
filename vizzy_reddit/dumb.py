@@ -35,6 +35,8 @@ class VIZZY_T:
         # Load in credentials from .env
         load_dotenv()
 
+        print("Cunt")
+
         # Set the bot's username
         self.bot_username = os.getenv('vizzy_username')
 

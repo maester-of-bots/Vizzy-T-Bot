@@ -40,13 +40,18 @@ def postTweet(api, content):
 def tweet_search(api,query,max,count2):
     q = f'"{query}" AND -filter:retweets AND -filter:replies&result_type=recent'
     tweets = [tweet for tweet in tweepy.Cursor(api.search_tweets, q=q, lang='en', result_type="mixed",count=max).items(count2)]
-    return tweets
+    elon =  api.user_timeline(screen_name='elonmusk', count=3, include_rts = False)
+
+    full = tweets + elon
+    return full
 
 
 
+def elon_search(api):
 
 
 
 class ConnectionTester(tweepy.Stream):
     def on_connection_error(self):
         self.disconnect()
+

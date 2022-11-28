@@ -48,6 +48,7 @@ def start():
     api = make_api()
     while True:
         tweets = tweet_search(api, "Vizzy T", 500, 500)
+
         for tweet in tweets:
             if str(tweet.id) in getComments() or tweet.user.id == 1587874000553779202:
                 print("In DB, skipping.")

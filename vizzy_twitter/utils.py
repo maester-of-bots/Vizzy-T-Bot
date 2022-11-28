@@ -47,9 +47,6 @@ def tweet_search(api,query,max,count2):
 
 
 
-def elon_search(api):
-
-
 
 class ConnectionTester(tweepy.Stream):
     def on_connection_error(self):

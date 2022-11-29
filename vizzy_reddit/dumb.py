@@ -302,6 +302,7 @@ class VIZZY_T:
                 # Yell at Bobby B.
                 x = whore()
                 redditObject.reply(body=x)
+                writeComment(redditObject.id)
                 thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
                 craft_embed("Sentient Vizzy T", user_text, self.webhook_sentient, f"https://www.reddit.com{redditObject.permalink}", thumbnail, x, color=0x00ff00)
 

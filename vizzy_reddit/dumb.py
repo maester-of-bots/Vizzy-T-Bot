@@ -35,8 +35,6 @@ class VIZZY_T:
         # Load in credentials from .env
         load_dotenv()
 
-        print("Cunt")
-
         # Set the bot's username
         self.bot_username = os.getenv('vizzy_username')
 
@@ -48,6 +46,7 @@ class VIZZY_T:
             user_agent=os.getenv('vizzy_user_agent'),
             username=os.getenv('vizzy_username')
         )
+
         self.webhook_bofh = os.getenv('webhook_bofh')
         self.webhook_canon = os.getenv('canon_vizzy')
         self.webhook_sentient = os.getenv('sentient_vizzy')
@@ -93,42 +92,6 @@ class VIZZY_T:
         data = {'content': body, 'username': 'BOFH'}
         requests.post(self.webhook_bofh, data=data)
 
-
-
-    def check_sentLog(self,obj):
-
-        # Reset log every four hours
-        if self.last_cleaned + timedelta(hours=4) < datetime.now():
-            self.sentience_log = {}
-            self.last_cleaned = datetime.now()
-            print(f"Cleaned the sentience log at {self.last_cleaned}")
-
-        print(f"Sentience Log:\n{self.sentience_log}")
-
-        if obj.author.name not in self.sentience_log:
-            self.sentience_log[obj.author.name] = 0
-            return True
-
-        # This amounts to about 4-5 comments with Vizzy using the DaVinci model, and then 200-250 comments (Check the math on that lol) using the Ada model.
-        elif self.sentience_log[obj.author.name] > 5000:
-            return False
-
-        else:
-            return True
-
-    def send_webhook(self, body, sentient=False):
-        # self.webhook_sentient
-
-        if sentient:
-            url = self.webhook_sentient
-            data = {'content': body, 'username': 'Sentient Vizzy T'}
-        else:
-            url = self.webhook_babysitter
-            data = {'content': body, 'username': 'FFS Babysitter'}
-
-        requests.post(url, data=data)
-
-
     """Sending a normal, random response"""
     def response_canon(self,comment):
         ts = datetime.now(self.tz)
@@ -170,8 +133,6 @@ class VIZZY_T:
             except Exception as e:
                 #body = "https://www.reddit.com"+comment.permalink + " - " + str(e)
                 self.send_errors(e)
-
-
 
 
     """Get the text of the object"""
@@ -269,7 +230,6 @@ class VIZZY_T:
 
             user_text, residual_sentience = self.comment_processer(parent)
 
-
             is_triggered = triggered(user_text)
 
             is_depleted = parent.id in getCommentsdwarf()
@@ -341,6 +301,9 @@ class VIZZY_T:
                 # Yell at Bobby B.
                 x = whore()
                 redditObject.reply(body=x)
+                thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+                craft_embed("Sentient Vizzy T", user_text, self.webhook_sentient, "https://www.reddit.com{redditObject.permalink}", thumbnail, x, color=0x00ff00)
+                
 
     def run(self):
         for comment in self.subreddit.stream.comments():

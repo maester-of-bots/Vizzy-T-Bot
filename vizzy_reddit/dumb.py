@@ -302,8 +302,8 @@ class VIZZY_T:
                 x = whore()
                 redditObject.reply(body=x)
                 thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
-                craft_embed("Sentient Vizzy T", user_text, self.webhook_sentient, "https://www.reddit.com{redditObject.permalink}", thumbnail, x, color=0x00ff00)
-                
+                craft_embed("Sentient Vizzy T", user_text, self.webhook_sentient, f"https://www.reddit.com{redditObject.permalink}", thumbnail, x, color=0x00ff00)
+
 
     def run(self):
         for comment in self.subreddit.stream.comments():

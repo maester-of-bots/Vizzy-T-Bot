@@ -258,23 +258,24 @@ class VIZZY_T:
             print(f"Skipping https://www.reddit.com{redditObject.permalink}")
             return
 
+        elif redditObject.author.name == 'SOBER-Lab' and isComment(redditObject):
+            if self.getText(redditObject).count("*") == 2:
+                r,c = get_sentient(redditObject)
+                redditObject.reply(body=r)
+                writeComment(redditObject.id)
+
+                user_comment = f"{redditObject.author.name}: {self.getText(redditObject)}"
+                webhook = self.webhook_sentient
+                url = f'https://www.reddit.com{redditObject.permalink}'
+                thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+
+                craft_embed("Sentient Vizzy T", user_comment, webhook, url, thumbnail, r, color=0x00ff00)
+
         else:
             user_text, triggered = self.firstlook(redditObject)
 
             if triggered:
                 if str(redditObject.author.name.lower()) in self.sentience_whitelist:
-                    r,c = get_sentient(redditObject)
-                    redditObject.reply(body=r)
-                    writeComment(redditObject.id)
-
-                    user_comment = f"{redditObject.author.name}: {self.getText(redditObject)}"
-                    webhook = self.webhook_sentient
-                    url = f'https://www.reddit.com{redditObject.permalink}'
-                    thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
-
-                    craft_embed("Sentient Vizzy T", user_comment, webhook, url, thumbnail, r, color=0x00ff00)
-
-                elif str(redditObject.author.name.lower()) == "sober-lab":
                     r,c = get_sentient(redditObject)
                     redditObject.reply(body=r)
                     writeComment(redditObject.id)

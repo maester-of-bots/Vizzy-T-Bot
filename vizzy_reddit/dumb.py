@@ -9,7 +9,9 @@ import discord
 
 from discord import SyncWebhook
 
+from sql import *
 
+from quotes import quotes
 
 
 def craft_embed(title, user_comment, webhook, url, thumbnail, response, color=0x00ff00):
@@ -50,6 +52,8 @@ class VIZZY_T:
         self.webhook_bofh = os.getenv('webhook_bofh')
         self.webhook_canon = os.getenv('canon_vizzy')
         self.webhook_sentient = os.getenv('sentient_vizzy')
+
+        self.maesters = ['SOBER-Lab','LSA-Lab']
 
         self.sentience_whitelist = ['apostastrophe','limacy','invertiguy','adelledewitt']
 
@@ -117,6 +121,10 @@ class VIZZY_T:
                 response = quotes[num]
                 if "{}" in response:
                     response = response.format(comment.author.name)
+
+                if 'tapestries' in response.lower():
+                    url = WOULDYOULIKETOSEETHETAPESTRIES(comment.author.name)
+                    response = f"[{response}]({url})"
 
                 comment.reply(body=response)
                 # comment.upvote()
@@ -258,18 +266,17 @@ class VIZZY_T:
             print(f"Skipping https://www.reddit.com{redditObject.permalink}")
             return
 
-        elif redditObject.author.name == 'SOBER-Lab' and isComment(redditObject):
-            if self.getText(redditObject).count("*") == 2:
-                r,c = get_sentient(redditObject)
-                redditObject.reply(body=r)
-                writeComment(redditObject.id)
+        elif redditObject.author.name in self.maesters and isComment(redditObject) and self.getText(redditObject).count("*") == 2:
+            r,c = get_sentient(redditObject)
+            redditObject.reply(body=r)
+            writeComment(redditObject.id)
 
-                user_comment = f"{redditObject.author.name}: {self.getText(redditObject)}"
-                webhook = self.webhook_sentient
-                url = f'https://www.reddit.com{redditObject.permalink}'
-                thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
+            user_comment = f"{redditObject.author.name}: {self.getText(redditObject)}"
+            webhook = self.webhook_sentient
+            url = f'https://www.reddit.com{redditObject.permalink}'
+            thumbnail = 'https://thc-lab.net/ffs/vizzy-t-bot.jpeg'
 
-                craft_embed("Sentient Vizzy T", user_comment, webhook, url, thumbnail, r, color=0x00ff00)
+            craft_embed("Sentient Vizzy T", user_comment, webhook, url, thumbnail, r, color=0x00ff00)
 
         else:
             user_text, triggered = self.firstlook(redditObject)
@@ -277,6 +284,12 @@ class VIZZY_T:
             if triggered:
                 if str(redditObject.author.name.lower()) in self.sentience_whitelist:
                     r,c = get_sentient(redditObject)
+
+                    if 'tapestries' in r.lower():
+                        url = WOULDYOULIKETOSEETHETAPESTRIES(redditObject.author.name)
+                        r = f"[{r}]({url})"
+
+
                     redditObject.reply(body=r)
                     writeComment(redditObject.id)
 

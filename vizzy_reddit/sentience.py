@@ -3,6 +3,10 @@ import os
 import openai
 import praw
 
+import requests
+
+from datetime import *
+
 load_dotenv()
 openai.api_key = os.getenv('sentient_v')
 
@@ -53,7 +57,26 @@ def tokenCalculator(comment, model):
     return tokens, costs[model]
 
 
+def WOULDYOULIKETOSEETHETAPESTRIES(prompt):
+    full_prompt = f"Regal tapestries adorned with {prompt}"
+    image_resp = openai.Image.create(prompt=full_prompt, n=1, size='1024x1024')
 
+    url = image_resp['data'][0]['url']
+
+    submit_url = 'https://thc-lab.net/art.html'
+
+    timestamp = datetime.now().timestamp()
+
+    filename = f"Tapestries_{timestamp}.jpeg"
+
+    payload = {
+        'code': 'fuck you you fucking fuck',
+        'url': url,
+        'filename': filename
+    }
+
+    r = requests.post(submit_url, data=payload)
+    return r.text
 
 
 def get_sentient(comment):

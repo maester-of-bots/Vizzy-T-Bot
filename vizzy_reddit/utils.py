@@ -1,9 +1,5 @@
 from datetime import *
-from westeros_bots import *
 from sentience import *
-from sql import *
-
-from quotes import quotes
 
 
 

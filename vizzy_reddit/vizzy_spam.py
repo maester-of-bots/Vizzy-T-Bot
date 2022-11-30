@@ -4,9 +4,13 @@ import discord
 
 from discord import SyncWebhook
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+spam_webhook = os.getenv('spam_webhook')
 
 def craft_embed(repost_url, response, color=0x00ff00):
-    spam_webhook = 'https://discord.com/api/webhooks/1046884167247478935/oSjhS98HYvPANX7IdrG-hfO9MgPVPJ8ie9faVKf-YYeGmbaQsChZtqSMQP9pGetLsAt4'
 
     found = "\n".join(response)
 

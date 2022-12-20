@@ -41,6 +41,21 @@ def send_webhook(url, body):
     data = {'content': body, 'username': 'Vizzy Twitter'}
     requests.post(url, data=data)
 
+
+def test():
+    # calling the api
+    api = tweepy.API(auth)
+
+    # the ID of the status
+    id = 1272771459249844224
+
+    # fetching the status
+    status = api.get_status(id)
+
+    # fetching the text attribute
+    text = status.text
+
+
 def start():
     load_dotenv()
     url = os.getenv('webhook')

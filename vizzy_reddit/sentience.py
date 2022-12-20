@@ -82,14 +82,16 @@ def WOULDYOULIKETOSEETHETAPESTRIES(prompt):
 def get_sentient(comment):
 
     # Craft the initial base
-    base = f"""The following is a conversation with Viserys Targaryen the First, a character from HBO's show "House of the Dragon" - Also known as Vizzy T.
-Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
+    base = f"""The following is a conversation with Viserys I Targaryen, a character from the show "House of the Dragon", or Vizzy T.
+Vizzy T's first wife, Aemma Arryn, died giving birth to their son Baelon Targaryen, who also died.
+Vizzy T's children are Rhaenyra, Aegon II, Helaena, Aemond, and Daeron.
+Vizzy T's brother is Daemon.
 """
 
     if not "bobby-b-bot" in comment.author.name.lower():
         base += f'Vizzy T will speak to {comment.author.name} as a king would speak to a member of his court, and commands respect from them.\n'
     else:
-        base += "Vizzy T recognizes bobby-b-bot as King Robert Baratheon, a future King of Westeros."
+        base += "Vizzy T recognizes bobby-b-bot_ as King Robert Baratheon, a future King of Westeros."
 
 
     reading = True
@@ -159,7 +161,7 @@ Vizzy T speaks like an old, sick king who has just awoken from a long slumber.
     max_tokens = 1750
 
     # Generate the raw response data
-    data = openai.Completion.create(engine='text-davinci-002',
+    data = openai.Completion.create(engine='text-davinci-003',
                                     prompt=base,
                                     max_tokens=max_tokens,
                                     presence_penalty=presence_penalty,
@@ -214,4 +216,6 @@ def whore():
 
     parsed += f"\n\n^(This response generated with OpenAI [DaVinci])"
 
-    return parsed
+    cost = data['usage']['total_tokens']
+
+    return parsed, cost

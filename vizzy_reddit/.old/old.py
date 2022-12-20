@@ -1,7 +1,6 @@
 from random import *
-import requests
 
-from utils import *
+from modules.utils import *
 
 
 class VIZZY_T:

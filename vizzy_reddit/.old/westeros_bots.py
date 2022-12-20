@@ -117,7 +117,7 @@ config = {
             "I don't pay you to put evil notions in my head. The ones already there don't need company.",
             "I have a tender spot in my heart for cripples, bastards and broken things.",
             "I imagined you'd be back at the brothel at this hour.",
-            "I remember reading an old sailor's proverb, 'Piss on wildfire and your cock burns off'.",
+            "I remember reading an .old sailor's proverb, 'Piss on wildfire and your cock burns off'.",
             "I saved you. I saved this city and all your worthless lives! I should've let Stannis kill you all!",
             "I should never have told you about that.",
             "I think I would have remembered that.",

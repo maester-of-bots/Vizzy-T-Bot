@@ -1,0 +1,17 @@
+{
+  "subreddits": {
+    "primary": ["freefolk", "HouseOfTheDragon"],
+    "canon": ["asofiaf", "hotd", "hotdgreens", "asoifcirclejerk", "gameofthrones", "freefolksimulator"],
+    "test": ["vizzy_t_test"],
+    "other": ["stonkymemes","SoapBoxBeers", "biscuit_meltdown", "shitboxbeers", "BSFT"]
+  },
+
+  "maesters": ["sober-lab","lsa-lab"],
+  "sentience": "true",
+  "tapestries": "true",
+  "sentience_whitelist": ["apostastrophe","limacy","invertiguy","adelledewitt"],
+  "sentience_limiter": "true",
+  "wakeup": [23,45],
+  "sleep": [0,15],
+  "timezone": "US/Eastern"
+}

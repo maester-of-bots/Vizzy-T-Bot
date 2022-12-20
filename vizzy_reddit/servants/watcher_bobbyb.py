@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 import os
 import praw
 import requests
-from utils import submissions_and_comments
 from sql import *
 from time import sleep
 
@@ -10,33 +9,32 @@ from time import sleep
 # Load in credentials from .env
 load_dotenv()
 
-
-# Initialize a Reddit object
-tyrion = praw.Reddit(
-    client_id=os.getenv('tyrion_client_id'),
-    client_secret=os.getenv('tyrion_client_secret'),
-    password=os.getenv('tyrion_password'),
-    user_agent=os.getenv('tyrion_user_agent'),
-    username=os.getenv('tyrion_username')
-)
+reddit = praw.Reddit(
+            client_id=os.getenv('bobby_b-client_id'),
+            client_secret=os.getenv('bobby_b-client_secret'),
+            password=os.getenv('bobby_b-password'),
+            user_agent=os.getenv('bobby_b-user_agent'),
+            username=os.getenv('bobby_b-username')
+        )
 
 
 
 # subreddit = tyrion.subreddit('freefolk+houseofthedragon')
-subreddit = tyrion.subreddit('vizzy_t_test')
-subreddit = tyrion.subreddit('freefolk')
+
+subreddit = reddit.subreddit('freefolk')
 
 webhook="https://discord.com/api/webhooks/1030705508539179139/nbNv5M4SeKj2lY6J34xtTXx7GdbxkNLeU4gOJYyCyWYQEYUnzm82OSGkgdtIaF801wF1"
 
 
 
 def checkonlarys():
-    comments = tyrion.redditor("larys-strong-bot").comments.new()
-    base = tyrion.comment(id='iuw5m6g')
+    comments = reddit.redditor("bobby-b-bot").comments.new()
+    base = reddit.comment(id='izdx2n8')
     for comment in comments:
         if comment.created > base.created:
             return True
-
+        else:
+            pass
     return False
 
 

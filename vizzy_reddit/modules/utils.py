@@ -84,6 +84,7 @@ class webhookmaster:
 
         if "sentient" in description:
             bot = "vizzy-sentient"
+            color = 0xFF0000
 
         webhook = self.webhooks[bot]
 

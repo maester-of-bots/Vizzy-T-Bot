@@ -17,6 +17,8 @@ class db:
         self.database = os.getenv('cloud_db-db')
         self.sslmode = os.getenv('cloud_db-ssl')
 
+        print("sudo yum install python-devel postgresql-devel")
+        print('sudo yum install python-psycopg2')
         try:
             self.init_sqlite()
         except:

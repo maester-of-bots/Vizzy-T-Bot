@@ -222,7 +222,7 @@ class VIZZY_T:
             # Get a sentient response and associated cost
             response, cost = get_sentient(redditObject)
             description = "Vizzy T made a sentient comment"
-            self.db.usage_dump("vizzy_t_bot","vizzy_t_bot", author, text, cost)
+            self.db.usage_dump(author, author, "Vizzy T Sentience",text, author, text, cost)
 
 
         else:
@@ -237,7 +237,7 @@ class VIZZY_T:
             image_url = WOULDYOULIKETOSEETHETAPESTRIES(redditObject.author.name)
             response = f"[{response}]({image_url})"
             description += ", and showed off his tapestries!"
-            self.db.usage_dump("vizzy_t_bot","vizzy_t_bot", author, text, cost)
+            self.db.usage_dump(author, author, "Vizzy T Sentience",text, author, text, cost)
 
         else:
             description += "."

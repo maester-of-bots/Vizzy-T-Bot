@@ -1,7 +1,7 @@
 {
   "subreddits": {
     "primary": ["freefolk", "HouseOfTheDragon"],
-    "canon": ["asofiaf", "hotd", "hotdgreens", "asoifcirclejerk", "gameofthrones", "freefolksimulator"],
+    "canon": ["asofiaf", "hotd", "asoifcirclejerk", "gameofthrones", "freefolksimulator"],
     "test": ["vizzy_t_test"],
     "other": ["stonkymemes","SoapBoxBeers", "biscuit_meltdown", "shitboxbeers", "BSFT"]
   },

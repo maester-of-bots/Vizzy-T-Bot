@@ -2,7 +2,7 @@ from modules.cloud_sql import *
 from modules.utils import *
 import pytz
 from random import *
-
+import requests
 
 class VIZZY_T:
     def __init__(self):
@@ -222,7 +222,8 @@ class VIZZY_T:
             # Get a sentient response and associated cost
             response, cost = get_sentient(redditObject)
             description = "Vizzy T made a sentient comment"
-            self.db.usage_dump(author, author, "Vizzy T Sentience",text, author, text, cost)
+
+            self.db.usage_dump(author, author, "Vizzy T Sentience", text, response, redditObject.subreddit.display_name, redditObject.permalink, cost)
 
 
         else:
@@ -237,7 +238,7 @@ class VIZZY_T:
             image_url = WOULDYOULIKETOSEETHETAPESTRIES(redditObject.author.name)
             response = f"[{response}]({image_url})"
             description += ", and showed off his tapestries!"
-            self.db.usage_dump(author, author, "Vizzy T Sentience",text, author, text, cost)
+            self.db.usage_dump(author, author, "Vizzy T Sentience", text, response, redditObject.subreddit.display_name, redditObject.permalink, cost)
 
         else:
             description += "."

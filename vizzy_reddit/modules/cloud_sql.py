@@ -25,17 +25,17 @@ class db:
             pass
 
 
-    def usage_dump(self, user_id, username, command, prompt, cost, columns=None, table="openai_usage"):
+    def usage_dump(self, user_id, username, command, prompt, response, subreddit, link, cost, key_ref="Bean_12.23.22", columns=None, table="openai_usage"):
         """
         Dump OpenAI usage data to the cloud database server
         """
 
         # Columns is always None
         if columns is None:
-            columns = ['user_id', 'username', 'timestamp', 'command', 'prompt', 'cost']
+            columns = ['user_id', 'username', 'timestamp', 'command', 'prompt', 'response', 'guild_id', 'channel_id', 'key_ref', 'cost']
 
         # Drop the data into the data list
-        data = (user_id, username, str(datetime.now()), command, prompt, str(cost))
+        data = (user_id, username, str(datetime.now()), command, prompt, response, subreddit, link, key_ref, str(cost))
 
 
 

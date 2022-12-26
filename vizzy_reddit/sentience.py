@@ -72,7 +72,8 @@ def WOULDYOULIKETOSEETHETAPESTRIES(prompt):
     payload = {
         'code': 'fuck you you fucking fuck',
         'url': url,
-        'filename': filename
+        'filename': filename,
+        'subdir': 'tapestries'
     }
 
     r = requests.post(submit_url, data=payload)

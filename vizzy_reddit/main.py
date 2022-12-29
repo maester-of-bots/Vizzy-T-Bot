@@ -238,7 +238,7 @@ class VIZZY_T:
             image_url = WOULDYOULIKETOSEETHETAPESTRIES(redditObject.author.name)
             response = f"[{response}]({image_url})"
             description += ", and showed off his tapestries!"
-            self.db.usage_dump(author, author, "Vizzy T Sentience", text, response, redditObject.subreddit.display_name, redditObject.permalink, cost)
+            self.db.usage_dump(author, author, "Vizzy T Sentience", text, response, redditObject.subreddit.display_name, redditObject.permalink, .2)
 
         else:
             description += "."

@@ -115,7 +115,10 @@ class webhookmaster:
 
         color = 0xff0000
 
-        self.craft_embed(title, url=url, author=author, comment=e,response="Dummy field.", bot='bofh', color=color)
+        if "object has no attribute 'name" in str(e):
+            pass
+        else:
+            self.craft_embed(title, url=url, author=author, comment=e,response="Dummy field.", bot='bofh', color=color)
 
 
 

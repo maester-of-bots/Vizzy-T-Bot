@@ -146,7 +146,7 @@ class VIZZY_T:
             return False
 
         # If the author is in the sentience whitelist, go ahead and be sentient.
-        elif author in self.config['sentience_whitelist']:
+        elif author in self.config['sentience_whitelist'] and text.count("*") >= 2:
             return True
 
         # Allow sentient responses to Maesters if they're using italics

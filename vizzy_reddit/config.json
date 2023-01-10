@@ -9,7 +9,7 @@
   "maesters": ["sober-lab","lsa-lab"],
   "sentience": "true",
   "tapestries": "true",
-  "sentience_whitelist": ["apostastrophe","limacy","invertiguy","adelledewitt"],
+  "sentience_whitelist": ["apostastrophe","limacy","invertiguy","adelledewitt",'rewindcrippledrag0n'],
   "sentience_limiter": "true",
   "wakeup": [23,45],
   "sleep": [0,15],
